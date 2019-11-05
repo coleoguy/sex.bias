@@ -5,12 +5,13 @@
 # coleoguy@gmail.com
 
 # Script to plot figure 2 for the manuscript
-
+library(ggplot2)
 library(viridis)
+
+
 library(gridExtra)
 library(ggpubr)
 library(grid)
-library(ggplot2)
 library(lattice)
 
 # Set your working directory to 'figures' folder
@@ -49,7 +50,7 @@ dominance <- ggplot(resultsplot3, aes(y=frequency, x=as.factor(h))) +
         legend.title = element_text(size = 13),
         legend.text = element_text(size = 13),
         text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5,)) + 
-  guides(fill=guide_legend(title="Dominance factor")) + 
+  #guides(fill=guide_legend(title="Dominance factor")) + 
   ylab("Allele frequency") +
   ggtitle("Effect of genetic architecture") +
   scale_fill_viridis(discrete=TRUE, option = "B") +
@@ -103,10 +104,10 @@ resultsplot <- read.csv("../../sex.bias/rscripts/parsing/Autosome.rare.male.csv"
                         as.is = T, header = T, check.names = F)
 resultsplot <- resultsplot[(resultsplot$rd == 0.5),]
 resultsplot <- resultsplot[(resultsplot$h == "h0.5"),]
-resultsplot <- resultsplot[(resultsplot$comm == 100),]
+resultsplot <- resultsplot[(resultsplot$comm == 500),]
 colnames(resultsplot) <- c("frequency", "common.sex", "osr", "rd", "h", "s")
 
-resultsplot4 <- resultsplot[(resultsplot$osr == 0.2),]
+resultsplot4 <- resultsplot[(resultsplot$osr == 0.1),]
 
 selection <- ggplot(resultsplot4, aes(y=1-frequency, x=as.factor(common.sex))) + 
   ylim(0, 1) +
@@ -154,7 +155,7 @@ autosomal <- ggplot(resultsplot2, aes(y=1-frequency, x=as.factor(common.sex))) +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
-        legend.position = c(0.935, 0.25),
+        legend.position = "bottom",
         legend.background = element_rect(fill= NA),
         legend.key.size = unit(0.1, "cm"),
         legend.key.width = unit(0.25,"cm"),
