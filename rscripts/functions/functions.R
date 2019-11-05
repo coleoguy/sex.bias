@@ -18,20 +18,11 @@ makeGenomes <- function(females, males, freqs=NULL){
   return(population)
 }
 
+
 measureFit <- function(pop, h, s){
-  if(h==0){
-    fit <- c(1,   1+s,   1+s,   1+s,
-             1+s, 1, 1, 1)
-    return(fit)
-  }
-  if(h==.5){
-    fit <- c(1, 1+h*s, 1+h*s, 1+s,
-             1+s,   1+h*s, 1+h*s, 1)
-    return(fit)
-  }
-  if(h==1){
-    fit <- c(1, 1,   1,   1+s,
-             1+s,   1+s, 1+s, 1)
+  if(h!=99){
+    fit <- c(1,   1+h*s,   1+h*s,   1+s,
+             1, 1/(1+h*s), 1/(1+h*s), 1/(1+s))
     return(fit)
   }
   if(h==99){
@@ -40,6 +31,7 @@ measureFit <- function(pop, h, s){
     return(fit)
   }
 }
+
 
 GetParentsGeno <- function(pop, fit, females, males){
   x.mom <- c(rep(1, pop[1]), rep(2, pop[2]), rep(3, pop[3]), rep(4, pop[4]))

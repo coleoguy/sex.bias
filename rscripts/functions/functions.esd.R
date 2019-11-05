@@ -68,19 +68,9 @@ makeGenomes <- function(females, males, freqs=NULL){
 }
 
 measureFit <- function(pop, h, s){
-  if(h==0){
-    fit <- c(1,   1+s,   1+s,   1+s,
-             1+s, 1, 1, 1)
-    return(fit)
-  }
-  if(h==.5){
-    fit <- c(1, 1+h*s, 1+h*s, 1+s,
-             1+s,   1+h*s, 1+h*s, 1)
-    return(fit)
-  }
-  if(h==1){
-    fit <- c(1, 1,   1,   1+s,
-             1+s,   1+s, 1+s, 1)
+  if(h!=99){
+    fit <- c(1,   1+h*s,   1+h*s,   1+s,
+             1, 1/(1+h*s), 1/(1+h*s), 1/(1+s))
     return(fit)
   }
   if(h==99){
@@ -144,7 +134,7 @@ makeEggs <- function(mom.geno){
   return(eggs)
 }
 
-makeSperm <- function(dad.geno, rd){
+makeSperm <- function(dad.geno){
   sperm <- rep(0, 2)
   names(sperm) <- c("1", "2")
   sperm[1] <- dad.geno[1] +
@@ -176,7 +166,7 @@ Generation <- function(pop, females, males, h, s){
   fit <- measureFit(pop, h, s)
   parents <- GetParentsGeno(pop, fit, females, males)
   eggs <- makeEggs(parents$moms)
-  sperm <- makeSperm(parents$dads, rd)
+  sperm <- makeSperm(parents$dads)
   pop <- makeNewPop(pop, eggs, sperm, females, males)
   return(pop)
 }
