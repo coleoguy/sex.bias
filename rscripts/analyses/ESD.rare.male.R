@@ -26,27 +26,27 @@ max.gens <- 500
 results <- as.data.frame(matrix(NA,0,6))
 colnames(results) <- c("freq0", "OSR", "sex.com", "num.com", "h", "s")
 
-# these nested loops will test each scenario pairing different 
+# these nested loops will test each scenario pairing different
 # parameters as appropriate
 for(i in 1:length(comm.sex)){
   # just prints to let us know progress
   print(paste("working on common sex =", comm.sex[i]))
   for(j in 1:length(osr)){
-    
+
     # here we calculate number of males and females in the pop
     females <- comm.sex[i]
     males <- round(comm.sex[i]*osr[j])
-    
+
     # here we calculate the total number of chromosomes
     chroms <- 2 * males + 2 * females
-    
+
     for(k in 1:length(s)){
-      
+
       for(m in 1:length(h)){
         # how many cores to run on
-        registerDoMC(5)
+        registerDoMC(6)
         x <- foreach (iter = 1:replicates, .combine = "c") %dopar% {
-          
+
           # sets up the initial population
           pop <- GetInitialPop(females, males)
           fre <- GetFreq(pop,allele=0,males,females)
@@ -55,15 +55,15 @@ for(i in 1:length(comm.sex)){
           # as we want to allow it to run
           segregating <- T
           counter <- 1
-          
+
           while(segregating){
             # one generation of selection
             pop <- Generation(pop, s=s[k], h=h[m], females, males)
-            
+
             # calculate the frequency of 0 allele
             old.fre <- fre
-            fre <- GetFreq(pop,allele=0,males,females)
-            
+            fre <- GetFreq(pop, allele=0, males, females)
+
             # test whether we have met stopping conditions
             if(fre == 0 | fre == 1 | counter == max.gens | round(old.fre, digits=5) == round(fre, digits=5)){
               segregating <- F
@@ -71,7 +71,7 @@ for(i in 1:length(comm.sex)){
             counter <- counter + 1
           }
           fre
-        }    
+        }
         # x = results from one setting
         if(males > females) sex.com <- "male"
         if(males < females) sex.com <- "female"
@@ -89,7 +89,4 @@ for(i in 1:length(comm.sex)){
   }
 }
 
-
-
-
-
+write.csv(results, file = "ESD.raremal.csv")
