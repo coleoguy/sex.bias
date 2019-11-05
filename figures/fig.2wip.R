@@ -33,7 +33,7 @@ colnames(resultsplot2) <- c("frequency", "common.sex", "osr", "rd", "h", "s")
 
 # Facet by dominance to show the effect of different genetic architectures. Comm.sex = 500. OSR = 1
 resultsplot3 <- resultsplot2[resultsplot2$osr == 1,]
-dominance <- ggplot(resultsplot3, aes(y=1-frequency, x=as.factor(h))) +
+dominance <- ggplot(resultsplot3, aes(y=frequency, x=as.factor(h))) +
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha = .5) +
   geom_violin(aes(fill=as.factor(h)), stat="ydensity", position="dodge", 
