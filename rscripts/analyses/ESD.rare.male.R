@@ -23,6 +23,7 @@ replicates <- 1000
 max.gens <- 500
 
 
+
 results <- as.data.frame(matrix(NA,0,6))
 colnames(results) <- c("freq0", "OSR", "sex.com", "num.com", "h", "s")
 

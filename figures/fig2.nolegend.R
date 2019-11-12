@@ -293,6 +293,8 @@ esd.rare.mal <- ggplot(results.500, aes(y=freq0, x=as.factor(num.com))) +
   scale_fill_viridis(discrete=TRUE) +
   scale_color_viridis(discrete=TRUE) 
 
+sum(results.500$freq0[results.500$OSR == 0.05] == 1)
+sum(results.500$freq0[results.500$OSR == 0.05] == 0)
 print(esd.rare.mal)
 
 library(cowplot)
