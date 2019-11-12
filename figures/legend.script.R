@@ -7,8 +7,8 @@
 # Script to plot figure 2 for the manuscript
 library(ggplot2)
 library(viridis)
-
-
+library(ggpubr)
+library(cowplot)
 library(gridExtra)
 library(ggpubr)
 library(grid)
@@ -34,7 +34,7 @@ colnames(resultsplot2) <- c("frequency", "common.sex", "osr", "rd", "h", "s")
 
 # Facet by dominance to show the effect of different genetic architectures. Comm.sex = 500. OSR = 1
 resultsplot3 <- resultsplot2[resultsplot2$osr == 1,]
-dominance <- ggplot(resultsplot3, aes(y=frequency, x=as.factor(h))) +
+dom.leg <- ggplot(resultsplot3, aes(y=frequency, x=as.factor(h))) +
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha = .5) +
   geom_violin(aes(fill=as.factor(h)), stat="ydensity", position="dodge", 
@@ -43,20 +43,20 @@ dominance <- ggplot(resultsplot3, aes(y=frequency, x=as.factor(h))) +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
-        legend.position = "bottom",
+        legend.position = "bottom", 
         legend.background = element_rect(fill= NA),
         legend.key.size = unit(0.4, "cm"),
         legend.key.width = unit(0.4,"cm"),
         legend.title = element_text(size = 13),
         legend.text = element_text(size = 13),
-        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5,)) + 
-  guides(fill=guide_legend(title="Dominance factor")) + 
+        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5,)) +
+  guides(fill=guide_legend(title="Dominance factor")) +
   ylab("Allele frequency") +
   ggtitle("Effect of genetic architecture") +
   scale_fill_viridis(discrete=TRUE, option = "B") +
   scale_color_viridis(discrete=TRUE, option = "B")
 
-print(dominance)
+d.leg <- get_legend(dom.leg)
 
 # Facet by recombination distance but only plot h=0.5. Comm.sex = 500, OSR = 1
 
@@ -73,7 +73,7 @@ resultsplot2 <- resultsplot
 resultsplot2$s <- c(0.5)
 colnames(resultsplot2) <- c("frequency", "common.sex", "osr", "rd", "h", "s")
 
-rd <- ggplot(resultsplot2, aes(y=1-frequency, x=as.factor(rd))) +
+rd.legend <- ggplot(resultsplot2, aes(y=1-frequency, x=as.factor(rd))) +
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha = .5) +
   geom_violin(aes(fill=as.factor(rd)), stat="ydensity", position="dodge", 
@@ -88,14 +88,14 @@ rd <- ggplot(resultsplot2, aes(y=1-frequency, x=as.factor(rd))) +
         legend.key.width = unit(0.4,"cm"),
         legend.title = element_text(size = 13),
         legend.text = element_text(size = 13),
-        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5,)) + 
-  guides(fill=guide_legend(title="Recombination distance")) + 
+        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5,)) +
+  guides(fill=guide_legend(title="Recombination distance")) +
   ylab("Allele frequency") +
   ggtitle("Effect of recombination") +
   scale_fill_viridis(discrete=TRUE, option = "B") +
   scale_color_viridis(discrete=TRUE, option = "B")
 
-print(rd)
+rd.leg <- get_legend(rd.legend)
 
 
 # Facet by selection coefficients but only plot h=0.5. Comm.sex = 100. OSR = 0.2
@@ -109,7 +109,7 @@ colnames(resultsplot) <- c("frequency", "common.sex", "osr", "rd", "h", "s")
 
 resultsplot4 <- resultsplot[(resultsplot$osr == 0.1),]
 
-selection <- ggplot(resultsplot4, aes(y=1-frequency, x=as.factor(common.sex))) + 
+selection.legend <- ggplot(resultsplot4, aes(y=1-frequency, x=as.factor(common.sex))) + 
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha = .5) +
   geom_violin(aes(fill=as.factor(s)), stat="ydensity", position="dodge", 
@@ -124,14 +124,15 @@ selection <- ggplot(resultsplot4, aes(y=1-frequency, x=as.factor(common.sex))) +
         legend.key.width = unit(0.4,"cm"),
         legend.title = element_text(size = 13),
         legend.text = element_text(size = 13),
-        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) + 
-  guides(fill=guide_legend(title="selection")) + 
+        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) +
+  guides(fill=guide_legend(title="selection")) +
   ylab("Allele frequency") +
   ggtitle("Effect of selection") +
   scale_fill_viridis(discrete=TRUE, option = "B") +
   scale_color_viridis(discrete=TRUE, option = "B")
 
-print(selection)
+s.leg <- get_legend(selection.legend)
+
 
 # Autosomal. Common sex (females) = 500, s=0.5, h=0.5, rd=0.5
 
@@ -146,7 +147,7 @@ resultsplot2 <- resultsplot
 resultsplot2$s <- c(0.5)
 colnames(resultsplot2) <- c("frequency", "common.sex", "osr", "rd", "h", "s")
 
-autosomal <- ggplot(resultsplot2, aes(y=1-frequency, x=as.factor(common.sex))) + 
+auto.legend <- ggplot(resultsplot2, aes(y=1-frequency, x=as.factor(common.sex))) + 
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha = .5) +
   geom_violin(aes(fill=as.factor(osr)), stat="ydensity", position="dodge", 
@@ -157,18 +158,19 @@ autosomal <- ggplot(resultsplot2, aes(y=1-frequency, x=as.factor(common.sex))) +
         axis.ticks.x=element_blank(),
         legend.position = "bottom",
         legend.background = element_rect(fill= NA),
-        legend.key.size = unit(0.1, "cm"),
-        legend.key.width = unit(0.25,"cm"),
-        legend.title = element_text(size = 10),
-        legend.text = element_text(size = 10),
-        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) + 
+        legend.key.size = unit(0.4, "cm"),
+        legend.key.width = unit(0.4,"cm"),
+        legend.title = element_text(size = 13),
+        legend.text = element_text(size = 13),
+        text=element_text(family="sans", face="plain", color="#000000", 
+                          size=15, hjust=0.5, vjust=0.5)) +
   guides(fill= guide_legend(title= "OSR")) +
   ylab("Allele frequency") +
   ggtitle("Autosomal") +
   scale_fill_viridis(discrete=TRUE) +
   scale_color_viridis(discrete=TRUE)
 
-print(autosomal)
+au.leg <- get_legend(auto.legend)
 
 # X chromosome. Common sex (females) = 500, s=0.5, h=0.5, rd=0.1
 
@@ -183,7 +185,7 @@ resultsplot2 <- resultsplot
 resultsplot2$s <- c(0.5)
 colnames(resultsplot2) <- c("frequency", "common.sex", "osr", "rd", "h", "s")
 
-xchrom <- ggplot(resultsplot2, aes(y=frequency, x=as.factor(common.sex))) +
+xchrom.legend <- ggplot(resultsplot2, aes(y=frequency, x=as.factor(common.sex))) +
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha = .5) +
   geom_violin(aes(fill=as.factor(osr)), stat="ydensity", position="dodge", 
@@ -192,20 +194,23 @@ xchrom <- ggplot(resultsplot2, aes(y=frequency, x=as.factor(common.sex))) +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
-        legend.position = c(0.935, 0.25),
+        legend.position = "right",
         legend.background = element_rect(fill= NA),
-        legend.key.size = unit(0.1, "cm"),
-        legend.key.width = unit(0.25,"cm"),
-        legend.title = element_text(size = 10),
-        legend.text = element_text(size = 10),
-        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) + 
-  guides(fill= guide_legend(title= "OSR")) + xlab("Common sex (females)") + 
+        legend.key.size = unit(0.4, "cm"),
+        legend.key.width = unit(0.4,"cm"),
+        legend.title = element_text(size = 13),
+        legend.text = element_text(size = 13),
+        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) +
+  guides(fill= guide_legend(title= "OSR")) + xlab("Common sex (females)") +
   ylab("Allele frequency") +
   ggtitle("X chromosome") +
   scale_fill_viridis(discrete=TRUE) +
   scale_color_viridis(discrete=TRUE)
+print(xchrom.legend)
 
-print(xchrom)
+
+x.leg <- get_legend(xchrom.legend)
+OSR.leg <- get_legend(xchrom.legend)
 
 # Y chromosome. Common sex (males) = 500, s=0.5, h=0.5, rd=0.1
 
@@ -220,7 +225,7 @@ resultsplot2 <- resultsplot
 resultsplot2$s <- c(0.5)
 colnames(resultsplot2) <- c("frequency", "common.sex", "osr", "rd", "h", "s")
 
-ychrom <- ggplot(resultsplot2, aes(y=frequency, x=as.factor(common.sex))) + 
+ychrom.legend <- ggplot(resultsplot2, aes(y=frequency, x=as.factor(common.sex))) + 
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha = .5) +
   geom_violin(aes(fill=as.factor(osr)), stat="ydensity", position="dodge", 
@@ -229,20 +234,20 @@ ychrom <- ggplot(resultsplot2, aes(y=frequency, x=as.factor(common.sex))) +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
-        legend.position = c(0.935, 0.25),
+        legend.position = "bottom",
         legend.background = element_rect(fill= NA),
-        legend.key.size = unit(0.1, "cm"),
-        legend.key.width = unit(0.25,"cm"),
-        legend.title = element_text(size = 10),
-        legend.text = element_text(size = 10),
-        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) + 
-  guides(fill= guide_legend(title= "OSR")) + xlab("Common sex (Males)") + 
+        legend.key.size = unit(0.4, "cm"),
+        legend.key.width = unit(0.4,"cm"),
+        legend.title = element_text(size = 13),
+        legend.text = element_text(size = 13),
+        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) +
+  guides(fill= guide_legend(title= "OSR")) + xlab("Common sex (Males)") +
   ylab("Allele frequency") +
   ggtitle("Y chromosome") +
   scale_fill_viridis(discrete=TRUE) +
   scale_color_viridis(discrete=TRUE)
 
-print(ychrom)
+y.leg <- get_legend(ychrom.legend)
 
 # Haplodiploidy rare males (Common sex = 500, s=0.5, h=0.5)
 
@@ -264,7 +269,7 @@ results.500$osr[results.500$osr == "osr0.2"] <- 0.2
 results.500$osr[results.500$osr == "osr0.1"] <- 0.1
 results.500$osr[results.500$osr == "osr0.05"] <- 0.05
 
-haplodiploidy.fem <- ggplot(results.500, aes(y=freq, x=as.factor(comm))) +
+hd.fem.legend <- ggplot(results.500, aes(y=freq, x=as.factor(comm))) +
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha = .5) +
   geom_violin(aes(fill=as.factor(osr)), stat="ydensity", position="dodge", alpha=0.8, trim=TRUE, 
@@ -272,20 +277,21 @@ haplodiploidy.fem <- ggplot(results.500, aes(y=freq, x=as.factor(comm))) +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
-        legend.position = c(0.935, 0.25),
+        legend.position = "bottom",
         legend.background = element_rect(fill= NA),
-        legend.key.size = unit(0.1, "cm"),
-        legend.key.width = unit(0.25,"cm"),
-        legend.title = element_text(size = 10),
-        legend.text = element_text(size = 10),
-        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) + 
-  guides(fill= guide_legend(title= "OSR")) + xlab("Common sex (females)") + 
+        legend.key.size = unit(0.4, "cm"),
+        legend.key.width = unit(0.4,"cm"),
+        legend.title = element_text(size = 13),
+        legend.text = element_text(size = 13), 
+        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) +
+  guides(fill= guide_legend(title= "OSR")) + xlab("Common sex (females)") +
   ylab("Allele frequency") +
   ggtitle("HD model - Rare males") +
   scale_fill_viridis(discrete=TRUE) +
   scale_color_viridis(discrete=TRUE) 
 
-print(haplodiploidy.fem)
+
+hd.fem.leg <- get_legend(hd.fem.legend)
 
 # Haplodiploidy rare females (Common sex = 500, s=0.5, h=0.5)
 hd.rare.fem <- read.csv("../../sex.bias/figures/HD/parsed.HD.rare.female.csv", 
@@ -307,7 +313,7 @@ results.500$osr[results.500$osr == "osr0.1"] <- 0.1
 results.500$osr[results.500$osr == "osr0.05"] <- 0.05
 
 
-haplodiploidy.mal <- ggplot(results.500, aes(y=1-freq, x=as.factor(comm))) + 
+hd.mal.legend <- ggplot(results.500, aes(y=1-freq, x=as.factor(comm))) + 
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha = .5) +
   geom_violin(aes(fill=as.factor(osr)), stat="ydensity", position="dodge", alpha=0.8, trim=TRUE, 
@@ -315,32 +321,34 @@ haplodiploidy.mal <- ggplot(results.500, aes(y=1-freq, x=as.factor(comm))) +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
-        legend.position = c(0.935, 0.25),
+        legend.position = "bottom",
         legend.background = element_rect(fill= NA),
-        legend.key.size = unit(0.1, "cm"),
-        legend.key.width = unit(0.25,"cm"),
-        legend.title = element_text(size = 10),
-        legend.text = element_text(size = 10),
-        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) + 
-  guides(fill= guide_legend(title= "OSR")) + xlab("Common sex (Males)") + 
+        legend.key.size = unit(0.4, "cm"),
+        legend.key.width = unit(0.4,"cm"),
+        legend.title = element_text(size = 13),
+        legend.text = element_text(size = 13), 
+        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) +
+  guides(fill= guide_legend(title= "OSR")) + xlab("Common sex (Males)") +
   ylab("Allele frequency") +
   ggtitle("HD model - Rare females") +
   scale_fill_viridis(discrete=TRUE) +
   scale_color_viridis(discrete=TRUE) 
 
-print(haplodiploidy.mal)
+
+hd.mal.leg <- get_legend(hd.mal.legend)
+
 
 # ESD (Common sex (females) = 500, s=0.5, h=0.5)
 
 esd.rare.mal <- read.csv("../results/ESD.raremal.csv", 
-         header = TRUE, sep = ",", as.is = T, check.names = F,
-         row.names = 1)
+                         header = TRUE, sep = ",", as.is = T, check.names = F,
+                         row.names = 1)
 
 result.plot <- esd.rare.mal[(esd.rare.mal$s == 0.5),]
 result.plot <- result.plot[(result.plot$h == 0.5),]
 results.500 <- result.plot[(result.plot$num.com == 500),]
 
-esd.rare.mal <- ggplot(results.500, aes(y=freq0, x=as.factor(num.com))) + 
+esd.rare.mal.legend <- ggplot(results.500, aes(y=freq0, x=as.factor(num.com))) + 
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha=.5) +
   geom_violin(aes(fill=as.factor(OSR)), stat="ydensity", position="dodge", alpha=0.8, trim=TRUE, 
@@ -349,75 +357,21 @@ esd.rare.mal <- ggplot(results.500, aes(y=freq0, x=as.factor(num.com))) +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
-        legend.position = c(0.935, 0.25),
+        legend.position = "bottom",
         legend.background = element_rect(fill= NA),
-        legend.key.size = unit(0.1, "cm"),
-        legend.key.width = unit(0.25,"cm"),
-        legend.title = element_text(size = 10),
-        legend.text = element_text(size = 10),
-        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) + 
+        legend.key.size = unit(0.4, "cm"),
+        legend.key.width = unit(0.4,"cm"),
+        legend.title = element_text(size = 13),
+        legend.text = element_text(size = 13), 
+        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) +
   guides(fill= guide_legend(title= "OSR")) +
   ylab("Allele frequency") +
   ggtitle("ESD") +
   scale_fill_viridis(discrete=TRUE) +
   scale_color_viridis(discrete=TRUE) 
 
-print(esd)
+esd.leg <- get_legend(esd.rare.mal.legend)
 
 
-# ESD common sex males = 500. s=0.5. h=0.5
-esd.rare.fem <- read.csv("../results/ESD.rarefem.csv", 
-                         header = TRUE, sep = ",", as.is = T, check.names = F,
-                         row.names = 1)
-
-result.plot <- esd.rare.fem[(esd.rare.fem$s == 0.5),]
-result.plot <- result.plot[(result.plot$h == 0.5),]
-results.500 <- result.plot[(result.plot$num.com == 500),]
-
-esd.rare.fem <- ggplot(results.500, aes(y=freq1, x=as.factor(num.com))) + 
-  ylim(0, 1) +
-  geom_hline(yintercept = .5, alpha=.5) +
-  geom_violin(aes(fill=as.factor(OSR)), stat="ydensity", position="dodge", alpha=0.8, trim=TRUE, 
-              scale="area") + 
-  theme_light() + 
-  theme(axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        legend.position = c(0.935, 0.25),
-        legend.background = element_rect(fill= NA),
-        legend.key.size = unit(0.1, "cm"),
-        legend.key.width = unit(0.25,"cm"),
-        legend.title = element_text(size = 10),
-        legend.text = element_text(size = 10),
-        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) + 
-  guides(fill= guide_legend(title= "OSR")) +
-  ylab("Allele frequency") +
-  ggtitle("ESD") +
-  scale_fill_viridis(discrete=TRUE) +
-  scale_color_viridis(discrete=TRUE) 
-
-print(esd)
-
-
-library(cowplot)
-g1 <- ggplotGrob(dominance)
-g2 <- ggplotGrob(rd)
-g3 <- ggplotGrob(selection)
-g4 <- ggplotGrob(autosomal)
-g5 <- ggplotGrob(xchrom)
-g6 <- ggplotGrob(ychrom)
-g7 <- ggplotGrob(haplodiploidy.fem)
-g8 <- ggplotGrob(haplodiploidy.mal)
-g9 <- ggplotGrob(esd.rare.mal)
-
-
-plot_grid(
-  g1, g2, g3, g4, g5, g6, g7, g8, g9, ncol=3,
-  labels = c('A)', 'B)', 'C)', 'D)', 'E)', 'F)', 'G)', 'H)', 'I)'),
-  align="hv"
-)
-
-
-
-ggsave(filename = "fig2.final.pdf",
-       plot= fig.2 , width=11, height=13, units="cm")
+grid.arrange(d.leg, rd.leg, s.leg, au.leg, OSR.leg,
+             ncol = 2, nrow = 3)
