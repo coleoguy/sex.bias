@@ -107,8 +107,6 @@ selection <- ggplot(resultsplot4, aes(y=1-frequency, x=as.factor(common.sex))) +
   ggtitle("Effect of selection") +
   scale_fill_viridis(discrete=TRUE, option = "B") +
   scale_color_viridis(discrete=TRUE, option = "B")
-print(selection)
-
 
 
 # Autosomal. Common sex (females) = 500, s=0.5, h=0.5, rd=0.5
@@ -278,7 +276,7 @@ result.plot <- esd.rare.mal[(esd.rare.mal$s == 0.5),]
 result.plot <- result.plot[(result.plot$h == 0.5),]
 results.500 <- result.plot[(result.plot$num.com == 500),]
 
-esd.rare.mal <- ggplot(results.500, aes(y=freq0, x=as.factor(num.com))) + 
+esd.rare.mal <- ggplot(results.500, aes(y=1-freq0, x=as.factor(num.com))) + 
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha=.5) +
   geom_violin(aes(fill=as.factor(OSR)), stat="ydensity", position="dodge", alpha=0.8, trim=TRUE, 
@@ -293,10 +291,7 @@ esd.rare.mal <- ggplot(results.500, aes(y=freq0, x=as.factor(num.com))) +
   scale_fill_viridis(discrete=TRUE) +
   scale_color_viridis(discrete=TRUE) 
 
-sum(results.500$freq0[results.500$OSR == 0.05] == 1)
-sum(results.500$freq0[results.500$OSR == 0.05] == 0)
-print(esd.rare.mal)
-
+# Now transform them to grobs to plot the individual graphs into a single plot area.
 library(cowplot)
 g1 <- ggplotGrob(dominance)
 g2 <- ggplotGrob(rd)
@@ -307,7 +302,6 @@ g6 <- ggplotGrob(ychrom)
 g7 <- ggplotGrob(hd.fem)
 g8 <- ggplotGrob(hd.mal)
 g9 <- ggplotGrob(esd.rare.mal)
-
 
 plot_grid(
   g1, g2, g3, g4, g5, g6, g7, g8, g9, ncol=3,
