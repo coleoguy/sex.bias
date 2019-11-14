@@ -97,12 +97,15 @@ ggplot(wbar.plot, aes(x=OSR, y=maxw)) +
   geom_segment(aes(x=OSR, xend=OSR, y=wbar.m, yend=maxw), 
                size=1, data=wbar.plot, colour="black", linetype="solid", alpha = 0.5) + 
   geom_segment(aes(x=OSR, xend=OSR, y=wbar.f, yend=maxw), 
-               size=1, data=wbar.plot, colour="blue", linetype="solid", alpha = 0.5) + 
+               size=1, data=wbar.plot, colour="blue", linetype="dashed", alpha = 0.5) + 
   geom_point(aes(x= OSR, y=wbar.m), data= wbar.plot, size=5, colour= "black", alpha = 0.5) +
   geom_point(aes(x= OSR, y=maxw), data= wbar.plot, size=5, colour= "black", alpha = 0.5) +
   geom_point(aes(x= OSR, y=wbar.f), data= wbar.plot, size=5, colour= "blue", alpha = 0.5) +
   geom_point(aes(x= OSR, y=maxw), data= wbar.plot, size=5, colour= "blue", alpha = 0.5) +
+  theme_light() +
   guides(fill=guide_legend(title="Common.sex")) + xlab("OSR") + ylab("Mean fitness")
+
+ggraptR(wbar.plot)
 
 ggplot(wbar.fem, aes(x=OSR, y=wbar)) + 
   geom_segment(aes(x=OSR, xend=OSR, y=wbar, yend=maxw), 
