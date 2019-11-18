@@ -1,32 +1,3 @@
-# 
-# category <- c("a", "b", "c", "d", "e", "f", "g")
-# wbar.m <- c(0.8, 0.83, 0.835, 0.85, 0.867, 0.872, 0.85)
-# wbar.f <- c(0.78, 0.817, 0.82, 0.8, 0.79, 0.76, 0.75)
-# max.w <- rep((1), 7)
-# category2 <- c("A", "B", "C", "D", "E", "F", "G")
-# rm(wbar.plot)
-# wbar.plot <- cbind(category, wbar.m, category2, wbar.f, max.w)
-# wbar.plot <- as.data.frame(wbar.plot)
-# 
-# ggplot(wbar.plot, aes(x=category, y=max.w)) +
-#   geom_segment(aes(x=category, xend=category, y=wbar.m, yend=max.w), 
-#                size=1, data=wbar.plot, colour="black", linetype="solid", alpha= 0.5) +
-#   geom_segment(aes(x=category2, xend=category2, y=wbar.f, yend=max.w), 
-#                size=1, data=wbar.plot, colour="blue", linetype="solid", alpha= 0.5) +
-#   geom_point(aes(x= category, y=wbar.m), data= wbar.plot, size=4, colour= "black", alpha = 0.5) +
-#   geom_point(aes(x= category, y=max.w), data= wbar.plot, size=4, colour= "black", alpha = 0.5) +
-#   geom_point(aes(x= category2, y=wbar.f), data= wbar.plot, size=4, colour= "blue", alpha = 0.5) +
-#   geom_point(aes(x= category2, y=max.w), data= wbar.plot, size=4, colour= "blue", alpha = 0.5) 
-# 
-# category <- c("OSR1", "OSR.8", "OSR.6", "OSR.4", "OSR.2", "OSR.1", "OSR.05")
-# wbar.m <- c(0.8, 0.83, 0.835, 0.85, 0.867, 0.872, 0.85)
-# wbar.f <- c(0.78, 0.817, 0.82, 0.8, 0.79, 0.76, 0.75)
-# max.w <- rep((1), 7)
-# category2 <- c("osr1", "osr.8", "osr.6", "osr.4", "osr.2", "osr.1", "osr.05")
-# rm(wbar.plot)
-# wbar.plot <- cbind(category, wbar.m, category2, wbar.f, max.w)
-# wbar.plot <- as.data.frame(wbar.plot)
-
 
 library(viridis)
 library(ggplot2)
@@ -123,41 +94,31 @@ wbar.plot <- wbar.h05[(wbar.h05$Common.sex == 100),]
 wbar.plot <- wbar.plot[,-c(1:2)]
 wbar.plot <- wbar.plot[,-c(2:3)]
 
-# category <- c("OSR1", "OSR.8", "OSR.6", "OSR.4", "OSR.2", "OSR.1", "OSR.05")
-# category2 <- c("osr1", "osr.8", "osr.6", "osr.4", "osr.2", "osr.1", "osr.05")
-
 wbar <- cbind(wbar.plot, category, category2)
-# wbar.plot$category <- factor(wbar.plot$category, 
-#                              levels = c("OSR1", "OSR.8", "OSR.6", "OSR.4", "OSR.2", "OSR.1", "OSR.05"))
-# wbar.plot$category2 <- factor(wbar.plot$category2, 
-#                               levels = c("osr1", "osr.8", "osr.6", "osr.4", "osr.2", "osr.1", "osr.05"))
+order <- c(1:7)
+wbar <- cbind(wbar, order)
 
+col.vir <- viridis(7)
 
-# order <- c(1, 2, 3, 4, 5, 6, 7)
-# wbar.plot <- cbind(wbar.plot, order)
-# wbar.plot$category <- factor(wbar.plot$category, levels = wbar.plot$category[order(wbar.plot$order)])
-# wbar.plot$category2 <- factor(wbar.plot$category2, levels = wbar.plot$category2[order(wbar.plot$order)])
+wbar <- cbind(wbar, col.vir)
 
-male.c <- ggplot(wbar, aes(x=category, y=max.w)) +
-  geom_segment(aes(x=category, xend=category, y=wbar.m, yend=max.w), 
-               size=1, data=wbar, colour="#29788E", linetype="solid", alpha= 0.35) +
+auto.mal <- ggplot(wbar, aes(x=as.factor(category), y=max.w)) +
+  geom_segment(aes(x= category, xend=category, y=wbar.m, yend=max.w), 
+               size=1, data=wbar, colour="red", linetype="solid", alpha= 0.35) +
   geom_segment(aes(x=category2, xend=category2, y=wbar.f, yend=max.w), 
-               size=1, data=wbar, colour="#440154", linetype="solid", alpha= 0.35) +
-  geom_point(aes(x= category, y=wbar.m), data= wbar, size=4, colour= "#29788E", alpha = 0.8) +
-  geom_point(aes(x= category, y=max.w), data= wbar, size=4, colour= "#29788E", alpha = 0.8) +
-  geom_point(aes(x= category2, y=wbar.f), data= wbar, size=4, colour= "#440154", alpha = 0.8) +
-  geom_point(aes(x= category2, y=max.w), data= wbar, size=4, colour= "#440154", alpha = 0.8) +
-  theme_light() + theme(axis.ticks.x=element_blank()) + ylim(0.7, 1.05) +
-  xlab("OSR") + ylab("Mean fitness") + ggtitle("Mean fitness (Common sex = males)")
+               size=1, data=wbar, colour="black", linetype="solid", alpha= 0.35) +
+  geom_point(aes(fill=as.factor(order), x= category, y=wbar.m), data= wbar, size=2, 
+             alpha = 1, , colour = col.vir) +
+  geom_point(aes(fill=as.factor(order),x= category, y=max.w), data= wbar, size=2, 
+             alpha = 1, colour = col.vir) +
+  geom_point(aes(fill=as.factor(order), x= category2, y=wbar.f), data= wbar, size=2,
+             alpha = 1, colour = col.vir) +
+  geom_point(aes(fill=as.factor(order), x= category2, y=max.w), data= wbar, size=2,
+             alpha = 1, colour = col.vir) +
+  theme_light() + theme(axis.ticks.x=element_blank(), legend.position = 'none') + ylim(0.7, 1.05) +
+  xlab("OSR") + ylab("Mean fitness") + ggtitle("Autosomes", subtitle = 'Common sex: Males')
 
-
-
-  
-# wbar.plot <- wbar.plot[,-c(2, 3)]
-# wbar.plot <- cbind(wbar.plot, category, category2)
-# wbar.plot$category <- factor(wbar.plot$category, levels = wbar.plot$category[order(wbar.plot$wbar.m)])
-# wbar.plot$category2 <- factor(wbar.plot$category2, levels = wbar.plot$category2[order(wbar.plot$wbar.f)])
-
+#########
 # Now Sex chromosomes. Females = common
 
 # create a data structure to store results
@@ -229,20 +190,28 @@ wbar.plot <- wbar.plot[,-c(1:2)]
 wbar.plot <- wbar.plot[,-c(2:3)]
 
 wbar <- cbind(wbar.plot, category, category2)
+col.vir <- viridis(7)
 
-fem.sexchrom <- ggplot(wbar, aes(x=category, y=max.w)) +
-  geom_segment(aes(x=category, xend=category, y=wbar.m, yend=max.w), 
-               size=1, data=wbar, colour="#29788E", linetype="solid", alpha= 0.35) +
+wbar <- cbind(wbar, col.vir)
+
+sexchrom.fem <- ggplot(wbar, aes(x=as.factor(category), y=max.w)) +
+  geom_segment(aes(x= category, xend=category, y=wbar.m, yend=max.w), 
+               size=1, data=wbar, colour="red", linetype="solid", alpha= 0.35) +
   geom_segment(aes(x=category2, xend=category2, y=wbar.f, yend=max.w), 
-               size=1, data=wbar, colour="#440154", linetype="solid", alpha= 0.35) +
-  geom_point(aes(x= category, y=wbar.m), data= wbar, size=4, colour= "#29788E", alpha = 0.8) +
-  geom_point(aes(x= category, y=max.w), data= wbar, size=4, colour= "#29788E", alpha = 0.8) +
-  geom_point(aes(x= category2, y=wbar.f), data= wbar, size=4, colour= "#440154", alpha = 0.8) +
-  geom_point(aes(x= category2, y=max.w), data= wbar, size=4, colour= "#440154", alpha = 0.8) +
-  theme_light() + theme(axis.ticks.x=element_blank()) + ylim(0.7, 1.05) +
-  xlab("OSR") + ylab("Mean fitness") + ggtitle("S.A.L on sex chromosome. (Common sex = females)")
+               size=1, data=wbar, colour="black", linetype="solid", alpha= 0.35) +
+  geom_point(aes(fill=as.factor(order), x= category, y=wbar.m), data= wbar, size=2, 
+             alpha = 1, , colour = col.vir) +
+  geom_point(aes(fill=as.factor(order),x= category, y=max.w), data= wbar, size=2, 
+             alpha = 1, colour = col.vir) +
+  geom_point(aes(fill=as.factor(order), x= category2, y=wbar.f), data= wbar, size=2,
+             alpha = 1, colour = col.vir) +
+  geom_point(aes(fill=as.factor(order), x= category2, y=max.w), data= wbar, size=2,
+             alpha = 1, colour = col.vir) +
+  theme_light() + theme(axis.ticks.x=element_blank(), legend.position = 'none') + ylim(0.7, 1.05) +
+  xlab("OSR") + ylab("Mean fitness") + ggtitle("Sex chromosomes", subtitle="Common sex: Females")
 
 
+#######
 # Now Sex chromosomes. Males = common
 
 # create a data structure to store results
@@ -314,30 +283,30 @@ wbar.plot <- wbar.plot[,-c(1:2)]
 wbar.plot <- wbar.plot[,-c(2:3)]
 
 wbar <- cbind(wbar.plot, category, category2)
-osr <- c("OSR1", "OSR.8", "OSR.6", "OSR.4", "OSR.2", "OSR.1", "OSR.05")
-wbar <- cbind(wbar, osr)
+col.vir <- viridis(7)
 
-mal.sexchrom <- ggplot(wbar, aes(x=category, y=max.w)) +
-  geom_segment(aes(x=category, xend=category, y=wbar.m, yend=max.w), 
-               size=1, data=wbar, colour="#29788E", linetype="solid", alpha= 0.35) +
+wbar <- cbind(wbar, col.vir)
+
+sexchrom.mal <- ggplot(wbar, aes(x=as.factor(category), y=max.w)) +
+  geom_segment(aes(x= category, xend=category, y=wbar.m, yend=max.w), 
+               size=1, data=wbar, colour="red", linetype="solid", alpha= 0.35) +
   geom_segment(aes(x=category2, xend=category2, y=wbar.f, yend=max.w), 
-               size=1, data=wbar, colour="#440154", linetype="solid", alpha= 0.35) +
-  geom_point(aes(x= category, y=wbar.m), 
-             data= wbar, size=4, colour= "#29788E", alpha = 0.8) +  
-  geom_point(aes(x= category, y=max.w), 
-             data= wbar, size=4, colour= "#29788E", alpha = 0.8, shape = wbar.m) +
-  geom_point(aes(x= category2, y=wbar.f), 
-             data= wbar, size=4, colour= "#440154", alpha = 0.8) +
-  geom_point(aes(x= category2, y=max.w), 
-             data= wbar, size=4, colour= "#440154", alpha = 0.8, shape=wbar.f) +
-  theme_light() + theme(axis.ticks.x=element_blank()) + ylim(0.7, 1.05) +
-  xlab("OSR") + ylab("Mean fitness") + ggtitle("S.A.L on sex chromosome. (Common sex = males)") +
-  theme(legend.position="bottom") 
+               size=1, data=wbar, colour="black", linetype="solid", alpha= 0.35) +
+  geom_point(aes(fill=as.factor(order), x= category, y=wbar.m), data= wbar, size=2, 
+             alpha = 1, , colour = col.vir) +
+  geom_point(aes(fill=as.factor(order),x= category, y=max.w), data= wbar, size=2, 
+             alpha = 1, colour = col.vir) +
+  geom_point(aes(fill=as.factor(order), x= category2, y=wbar.f), data= wbar, size=2,
+             alpha = 1, colour = col.vir) +
+  geom_point(aes(fill=as.factor(order), x= category2, y=max.w), data= wbar, size=2,
+             alpha = 1, colour = col.vir) +
+  theme_light() + theme(axis.ticks.x=element_blank(), legend.position = 'none') + ylim(0.7, 1.05) +
+  xlab("OSR") + ylab("Mean fitness") + ggtitle("Sex chromosomes", subtitle="Common sex: Males")
 
 library(cowplot)
-g1 <- ggplotGrob(male.c)
-g2 <- ggplotGrob(fem.sexchrom)
-g3 <- ggplotGrob(mal.sexchrom)
+g1 <- ggplotGrob(auto.mal)
+g2 <- ggplotGrob(sexchrom.fem)
+g3 <- ggplotGrob(sexchrom.mal)
 
 
 plot_grid(
