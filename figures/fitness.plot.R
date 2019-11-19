@@ -85,28 +85,151 @@ for(i in 1:4){
 wbar.fem.h05 <- melt(results.fit.fem[1:7,])
 wbar.mal.h05 <- melt(results.fit.mal[1:7,])
 max.fit <- rep(c(1), 28)
-wbar.h05 <- cbind(wbar.fem.h05, wbar.mal.h05$value, max.fit)
 
-colnames(wbar.h05) <- c("OSR", "Common.sex", "wbar.f", "wbar.m", "maxw")
+wbar.h05 <- cbind(wbar.fem.h05, wbar.mal.h05, max.fit)
+colnames(wbar.h05) <- c("OSR1", "Common.sex", "wbar.f", "OSR2", "Common.sex", "wbar.m", "max.fit")
+
+wbar.plot <- wbar.h05[(wbar.h05$Common.sex == 100),]
+
+wbar.plot$OSR2<- c("OSR1.1", "OSR.81", "OSR.61", "OSR.41", "OSR.21", "OSR.11", "OSR.051")
+
+ggplot(wbar.plot, aes(x=OSR1, y=max.fit)) + 
+  geom_segment(aes(x=OSR1, xend=OSR1, y=wbar.m, yend=max.fit), 
+               size=1, data=wbar.plot, colour="black", linetype="solid", alpha = 0.5) + 
+  geom_segment(aes(x=OSR2, xend=OSR2, y=wbar.f, yend=max.fit), 
+               size=1, data=wbar.plot, colour="blue", linetype="solid", alpha = 0.5) + 
+  geom_point(aes(x= OSR1, y=wbar.m), data= wbar.plot, size=4, colour= "black", alpha = 0.5) +
+  geom_point(aes(x= OSR1, y=max.fit), data= wbar.plot, size=4, colour= "black", alpha = 0.5) +
+  geom_point(aes(x= OSR2, y=wbar.f), data= wbar.plot, size=4, colour= "blue", alpha = 0.5) +
+  geom_point(aes(x= OSR2, y=max.fit), data= wbar.plot, size=4, colour= "blue", alpha = 0.5) +
+  scale_x_reverse() +
+  theme_light() +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x=element_blank()) +
+  guides(fill=guide_legend(title="Common.sex")) + xlab("OSR") + ylab("Mean fitness")
+
+wbar.plot <- wbar.plot[,-2]
+
+# fitness <- c(0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1)
+# OSRdummy<-  c(1, 0.8, 0.6, 0.4, 0.2, 0.1, 0.05)
+# OSR.dummy1 <- OSRdummy + 0.005
+# OSR.dummy2 <- OSRdummy - 0.005
+# wbar.h05 <- cbind(wbar.fem.h05, wbar.mal.h05$value, max.fit, OSRdummy, OSR.dummy1, OSR.dummy2)
+
+# p <- ggplot(wbar.plot, aes(x=OSR, y = fitness)) + theme_light() 
+# 
+# 
+# 
+# p + geom_point(aes(y=wbar.m), data= wbar.plot, size=4, colour= "black", alpha = 0.5) +
+#   geom_point(aes(y=maxw), data= wbar.plot, size=4, colour= "orange", alpha = 0.5) +
+#   geom_point(aes(y=wbar.f), data= wbar.plot, size=4, colour= "blue", alpha = 0.5) +
+#   geom_point(aes(y=maxw), data= wbar.plot, size=4, colour= "orange", alpha = 0.5) +
+#   theme(axis.title.x=element_blank(),
+#         axis.text.x=element_blank(),
+#         axis.ticks.x=element_blank())
+  
+
+ 
 
 
-wbar.plot <- wbar.h05[(wbar.h05$Common.sex == 1000),]
+# ggplot(wbar.plot, aes(x=OSR, y=maxw)) + 
+#   geom_segment(aes(x=osr-0.02, xend=osr-0.02, y=wbar.m, yend=maxw), 
+#                size=1, data=wbar.plot, colour="black", linetype="solid", alpha = 0.5) + 
+#   geom_segment(aes(x=osr+0.02, xend=osr+0.02, y=wbar.f, yend=maxw), 
+#                size=1, data=wbar.plot, colour="blue", linetype="solid", alpha = 0.5) + 
+#   geom_point(aes(x= osr-0.02, y=wbar.m), data= wbar.plot, size=4, colour= "black", alpha = 0.5) +
+#   geom_point(aes(x= osr-0.02, y=maxw), data= wbar.plot, size=4, colour= "black", alpha = 0.5) +
+#   geom_point(aes(x= osr+0.02, y=wbar.f), data= wbar.plot, size=4, colour= "blue", alpha = 0.5) +
+#   geom_point(aes(x= osr+0,02, y=maxw), data= wbar.plot, size=4, colour= "blue", alpha = 0.5) +
+#   scale_x_reverse() +
+#   theme_light() +
+#   guides(fill=guide_legend(title="Common.sex")) + xlab("OSR") + ylab("Mean fitness") +
+#   theme(axis.title.x=element_blank(),
+#         axis.text.x=element_blank(),
+#         axis.ticks.x=element_blank())
+
+
+# OSRdummy<-  c(1, 0.8, 0.6, 0.4, 0.2, 0.1, 0.05)
+# OSR.dummy1 <- OSRdummy + 0.005
+# OSR.dummy2 <- OSRdummy - 0.005
+# # wbar.plot <- cbind(wbar.plot, OSR.dummy1, OSR.dummy2)
+# wbar.plot <- cbind(wbar.plot, OSRdummy)
+
+# osr <- rep(c("OSR1", "OSR.8", "OSR.6", "OSR.4", "OSR.2", "OSR.1", "OSR.05"), 2)
+# osr <- as.factor(osr)
+# value <- c(wbar.plot$wbar.f, wbar.plot$wbar.m)
+# max.value <- rep(wbar.plot$maxw, 2)
+# variable <- rep(c("wbar.f", "wbar.m"), each = 7)
+# wbar.long <- cbind(osr, value, variable, max.value)
+# wbar.long <- as.data.frame(wbar.long)
+# 
+# ggplot(data=wbar.long,
+#        aes(x=osr, y=value, colour=variable)) +
+#   geom_point() +
+#   geom_point(aes(x=osr, y=max.value), data=wbar.long, colour = "black") + theme_light()
+
 
 
 ggplot(wbar.plot, aes(x=OSR, y=maxw)) + 
-  geom_segment(aes(x=OSR, xend=OSR, y=wbar.m, yend=maxw), 
+  geom_segment(aes(x=OSR.dummy1, xend=OSR.dummy1, y=wbar.m, yend=maxw), 
                size=1, data=wbar.plot, colour="black", linetype="solid", alpha = 0.5) + 
-  geom_segment(aes(x=OSR, xend=OSR, y=wbar.f, yend=maxw), 
-               size=1, data=wbar.plot, colour="blue", linetype="dashed", alpha = 0.5) + 
-  geom_point(aes(x= OSR, y=wbar.m), data= wbar.plot, size=5, colour= "black", alpha = 0.5) +
-  geom_point(aes(x= OSR, y=maxw), data= wbar.plot, size=5, colour= "black", alpha = 0.5) +
-  geom_point(aes(x= OSR, y=wbar.f), data= wbar.plot, size=5, colour= "blue", alpha = 0.5) +
-  geom_point(aes(x= OSR, y=maxw), data= wbar.plot, size=5, colour= "blue", alpha = 0.5) +
+  geom_segment(aes(x=OSR.dummy2, xend=OSR.dummy2, y=wbar.f, yend=maxw), 
+               size=1, data=wbar.plot, colour="blue", linetype="solid", alpha = 0.5) + 
+  geom_point(aes(x= OSR.dummy1, y=wbar.m), data= wbar.plot, size=4, colour= "black", alpha = 0.5) +
+  geom_point(aes(x= OSR.dummy1, y=maxw), data= wbar.plot, size=4, colour= "black", alpha = 0.5) +
+  geom_point(aes(x= OSR.dummy2, y=wbar.f), data= wbar.plot, size=4, colour= "blue", alpha = 0.5) +
+  geom_point(aes(x= OSR.dummy2, y=maxw), data= wbar.plot, size=4, colour= "blue", alpha = 0.5) +
+  scale_x_reverse() +
   theme_light() +
   guides(fill=guide_legend(title="Common.sex")) + xlab("OSR") + ylab("Mean fitness")
 
-ggraptR(wbar.plot)
 
+# ggplot(wbar.plot, aes(x=OSR, y=maxw)) + 
+#   geom_segment(aes(x=OSR, xend=OSR, y=wbar.m, yend=maxw), 
+#                size=1, data=wbar.plot, colour="black", linetype="solid", alpha = 0.5) + 
+#   geom_segment(aes(x=OSR, xend=OSR, y=wbar.f, yend=maxw), 
+#                size=1, data=wbar.plot, colour="blue", linetype="dashed", alpha = 0.5) + 
+#   geom_point(aes(x= OSR, y=wbar.m), data= wbar.plot, size=5, colour= "black", alpha = 0.5, position = jitter) +
+#   geom_point(aes(x= OSR, y=maxw), data= wbar.plot, size=5, colour= "black", alpha = 0.5, position = jitter) +
+#   geom_point(aes(x= OSR, y=wbar.f), data= wbar.plot, size=5, colour= "blue", alpha = 0.5) +
+#   geom_point(aes(x= OSR, y=maxw), data= wbar.plot, size=5, colour= "blue", alpha = 0.5) +
+#   theme_light() +
+#   guides(fill=guide_legend(title="Common.sex")) + xlab("OSR") + ylab("Mean fitness")
+
+ggplot(wbar.plot, aes(x=OSR, y=maxw)) + 
+  # geom_segment(aes(x=OSR, xend=OSR, y=wbar.m, yend=maxw), 
+  #              size=1, data=wbar.plot, colour="black", linetype="solid", alpha = 0.5) + 
+  # geom_segment(aes(x=OSR, xend=OSR, y=wbar.f, yend=maxw), 
+  #              size=1, data=wbar.plot, colour="blue", linetype="solid", alpha = 0.5) + 
+  geom_point(position = position_dodge(width=1), colour = "black", aes(x= OSR, y=wbar.m), data= wbar.plot, size=5, alpha = 0.5) +
+  geom_point(position = position_dodge(width=1), colour = "black", aes(x= OSR, y=maxw), data= wbar.plot, size=5, alpha = 0.5) +
+  geom_point(position = position_dodge(width=0.1), colour = "blue", aes(x= OSR, y=wbar.f), data= wbar.plot, size=5, alpha = 0.5) +
+  geom_point(position = position_dodge(width=0.1), colour = "blue", aes(x= OSR, y=maxw), data= wbar.plot, size=5, alpha = 0.5) +
+  theme_light() +
+  guides(fill=guide_legend(title="Common.sex")) + xlab("OSR") + ylab("Mean fitness")
+
+
+ggplot(wbar.plot, mapping = aes(x = OSR, y = maxw)) + 
+  geom_segment(aes(x=OSR.dummy1, xend=OSR.dummy1, y=wbar.m, yend=maxw), 
+               size=1, data=wbar.plot, colour="black", linetype="solid", alpha = 0.5) + 
+  geom_segment(aes(x=OSR.dummy2, xend=OSR.dummy2, y=wbar.f, yend=maxw), 
+               size=1, data=wbar.plot, colour="blue", linetype="solid", alpha = 0.5) + 
+  geom_point(aes(x= OSR.dummy1, y=wbar.m), data= wbar.plot, size=4, colour= "black", alpha = 0.5) +
+  geom_point(aes(x= OSR.dummy1, y=maxw), data= wbar.plot, size=4, colour= "black", alpha = 0.5) +
+  geom_point(aes(x= OSR.dummy2, y=wbar.f), data= wbar.plot, size=4, colour= "blue", alpha = 0.5) +
+  geom_point(aes(x= OSR.dummy2, y=maxw), data= wbar.plot, size=4, colour= "blue", alpha = 0.5) +
+  scale_x_reverse() +
+  theme_light() +
+  guides(fill=guide_legend(title="Common.sex")) + xlab("OSR") + ylab("Mean fitness")
+
+# panel.grid = element_blank(),
+# axis.title.x = element_blank(),
+# axis.text.x = element_blank()
+#axis.ticks.x=element_blank(),
+# ggraptR(wbar.plot)
+library(ggraptR)
+ggraptR(wbar.plot)
 ggplot(wbar.fem, aes(x=OSR, y=wbar)) + 
   geom_segment(aes(x=OSR, xend=OSR, y=wbar, yend=maxw), 
                size=1, data=wbar.fem, colour="black", linetype="solid") + 
