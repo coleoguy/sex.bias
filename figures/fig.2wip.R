@@ -34,7 +34,7 @@ colnames(resultsplot2) <- c("frequency", "common.sex", "osr", "rd", "h", "s")
 
 # Facet by dominance to show the effect of different genetic architectures. Comm.sex = 500. OSR = 1
 resultsplot3 <- resultsplot2[resultsplot2$osr == 1,]
-dominance <- ggplot(resultsplot3, aes(y=1-frequency, x=as.factor(h))) +
+dominance <- ggplot(resultsplot3, aes(y=frequency, x=as.factor(h))) +
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha = .5) +
   geom_violin(aes(fill=as.factor(h)), stat="ydensity", position="dodge", 
@@ -50,7 +50,7 @@ dominance <- ggplot(resultsplot3, aes(y=1-frequency, x=as.factor(h))) +
         legend.title = element_text(size = 13),
         legend.text = element_text(size = 13),
         text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5,)) + 
-  #guides(fill=guide_legend(title="Dominance factor")) + 
+  guides(fill=guide_legend(title="Dominance factor")) + 
   ylab("Allele frequency") +
   ggtitle("Effect of genetic architecture") +
   scale_fill_viridis(discrete=TRUE, option = "B") +
@@ -332,14 +332,15 @@ print(haplodiploidy.mal)
 
 # ESD (Common sex (females) = 500, s=0.5, h=0.5)
 
-load("../results/esd.RData")
-esd.rare.mal <- results
+esd.rare.mal <- read.csv("../results/ESD.raremal.csv", 
+         header = TRUE, sep = ",", as.is = T, check.names = F,
+         row.names = 1)
 
 result.plot <- esd.rare.mal[(esd.rare.mal$s == 0.5),]
 result.plot <- result.plot[(result.plot$h == 0.5),]
 results.500 <- result.plot[(result.plot$num.com == 500),]
 
-esd <- ggplot(results.500, aes(y=freq0, x=as.factor(num.com))) + 
+esd.rare.mal <- ggplot(results.500, aes(y=freq0, x=as.factor(num.com))) + 
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha=.5) +
   geom_violin(aes(fill=as.factor(OSR)), stat="ydensity", position="dodge", alpha=0.8, trim=TRUE, 
@@ -363,61 +364,39 @@ esd <- ggplot(results.500, aes(y=freq0, x=as.factor(num.com))) +
 
 print(esd)
 
-# use grid arrange to combine all of these plots into a single figure. Number of rows = 3, so there  
-# will be three plots per row.
 
-# fig.2 <- grid.arrange(dominance, rd, selection, autosomal, xchrom, ychrom, haplodiploidy.fem,
-#                       haplodiploidy.mal, esd, nrow = 3, respect = TRUE)
-# 
-# 
-# library(ggpubr)
-# fig.2 <- ggarrange(dominance, rd, selection, autosomal, xchrom, ychrom, 
-#                    haplodiploidy.fem, haplodiploidy.mal, esd, ncol = 3, nrow = 3,
-#                    labels = c("A", "B", "C", "D", "E", "F", "G", "H", "I"))
-# 
-# library(grid)
-# lay <- rbind(c(1,2,3),
-#              c(4,5,6),
-#              c(7,8,9))
-# 
-# 
-# fig.2 <- print(grid.arrange(arrangeGrob(dominance, left = textGrob("a)", x = unit(1, "npc"), 
-#                                                        y = unit(1, "npc"))), 
-#                    arrangeGrob(rd, left =textGrob("b)", x = unit(1, "npc"), 
-#                                                       y = unit(1, "npc"))),
-#                    arrangeGrob(selection, left=textGrob("c)", x = unit(1, "npc"), 
-#                                                      y = unit(1, "npc"))),
-#                    arrangeGrob(autosomal, left=textGrob("d)", x = unit(1, "npc"), 
-#                                                         y = unit(1, "npc"))),
-#                    arrangeGrob(xchrom, left=textGrob("e)", x = unit(1, "npc"), 
-#                                                         y = unit(1, "npc"))),
-#                    arrangeGrob(ychrom, left=textGrob("f)", x = unit(1, "npc"), 
-#                                                         y = unit(1, "npc"))),
-#                    arrangeGrob(haplodiploidy.fem, left=textGrob("g)", x = unit(1, "npc"), 
-#                                                         y = unit(1, "npc"))),
-#                    arrangeGrob(haplodiploidy.mal, left=textGrob("h)", x = unit(1, "npc"), 
-#                                                         y = unit(1, "npc"))),
-#                    arrangeGrob(esd, left=textGrob("i)", x = unit(1, "npc"), 
-#                                                         y = unit(1, "npc"))),
-#                    layout_matrix = lay))
-# 
-# library(gtable)
-# g1 <- ggplotGrob(dominance)
-# g2 <- ggplotGrob(rd)
-# g3 <- ggplotGrob(selection)
-# g4 <- ggplotGrob(autosomal)
-# g5 <- ggplotGrob(xchrom)
-# g6 <- ggplotGrob(ychrom)
-# g7 <- ggplotGrob(haplodiploidy.fem)
-# g8 <- ggplotGrob(haplodiploidy.mal)
-# g9 <- ggplotGrob(esd)
-# 
-# g <- rbind(g1, g2, g3, g4, g5, g6, g7, g8, g9, size ="max")
-# 
-# g$widths <- unit.pmax(g1$widths, g2$widths, g3$widths, g4$widths, g5$widths, g6$widths, g7$widths,
-#                         g8$widths, g9$widths)
-# grid.newpage()
-# grid.draw(g)
+# ESD common sex males = 500. s=0.5. h=0.5
+esd.rare.fem <- read.csv("../results/ESD.rarefem.csv", 
+                         header = TRUE, sep = ",", as.is = T, check.names = F,
+                         row.names = 1)
+
+result.plot <- esd.rare.fem[(esd.rare.fem$s == 0.5),]
+result.plot <- result.plot[(result.plot$h == 0.5),]
+results.500 <- result.plot[(result.plot$num.com == 500),]
+
+esd.rare.fem <- ggplot(results.500, aes(y=freq1, x=as.factor(num.com))) + 
+  ylim(0, 1) +
+  geom_hline(yintercept = .5, alpha=.5) +
+  geom_violin(aes(fill=as.factor(OSR)), stat="ydensity", position="dodge", alpha=0.8, trim=TRUE, 
+              scale="area") + 
+  theme_light() + 
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        legend.position = c(0.935, 0.25),
+        legend.background = element_rect(fill= NA),
+        legend.key.size = unit(0.1, "cm"),
+        legend.key.width = unit(0.25,"cm"),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 10),
+        text=element_text(family="sans", face="plain", color="#000000", size=15, hjust=0.5, vjust=0.5)) + 
+  guides(fill= guide_legend(title= "OSR")) +
+  ylab("Allele frequency") +
+  ggtitle("ESD") +
+  scale_fill_viridis(discrete=TRUE) +
+  scale_color_viridis(discrete=TRUE) 
+
+print(esd)
 
 
 library(cowplot)
@@ -429,7 +408,7 @@ g5 <- ggplotGrob(xchrom)
 g6 <- ggplotGrob(ychrom)
 g7 <- ggplotGrob(haplodiploidy.fem)
 g8 <- ggplotGrob(haplodiploidy.mal)
-g9 <- ggplotGrob(esd)
+g9 <- ggplotGrob(esd.rare.mal)
 
 
 plot_grid(
