@@ -303,7 +303,7 @@ haplodiploidy.mal <- ggplot(results.500, aes(y=1-freq, x=as.factor(comm))) +
 print(haplodiploidy.mal)
 
 # ESD (Common sex (females) = 500, s=0.5, h=0.5)
-
+# TODO pull in more recent results these are other fitness function
 load("../results/esd.RData")
 esd.rare.mal <- results
 
