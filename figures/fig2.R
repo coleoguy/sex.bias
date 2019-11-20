@@ -304,14 +304,17 @@ print(haplodiploidy.mal)
 
 # ESD (Common sex (females) = 500, s=0.5, h=0.5)
 # TODO pull in more recent results these are other fitness function
-load("../results/esd.RData")
-esd.rare.mal <- results
+esd.rare.mal <- 
+  read.csv("../../sex.bias/results/ESD.raremal.csv", 
+         row.names = 1, 
+         as.is = T, header = T, check.names = F)
+
 
 result.plot <- esd.rare.mal[(esd.rare.mal$s == 0.5),]
 result.plot <- result.plot[(result.plot$h == 0.5),]
 results.500 <- result.plot[(result.plot$num.com == 500),]
 
-esd <- ggplot(results.500, aes(y=freq0, x=as.factor(num.com))) + 
+esd <- ggplot(results.500, aes(y=1-freq0, x=as.factor(num.com))) + 
   coord_fixed(4/3) +
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha=.5) +
