@@ -163,7 +163,8 @@ for(i in 1:4){
     }
     if(j > 1){
       # looks at bias model
-      fit <-  getFitness(data = rare.male[[i]][[j-1]]$rd0.1$h0.5$s0.5, loc, h, s)
+      fit <-  getFitness(data = rare.male[[i]][[j-1]]$rd0.1$h0.5$s0.5, 
+                         loc, h, s)
       results.fit.mal[j, i] <- mean(fit$wbar.m)
     }
   }
@@ -179,7 +180,8 @@ for(i in 1:4){
     }
     if(j > 1){
       # looks at bias model
-      fit <-  getFitness(data = rare.male[[i]][[j-1]]$rd0.1$h0.5$s0.5, loc, h, s)
+      fit <-  getFitness(data = rare.male[[i]][[j-1]]$rd0.1$h0.5$s0.5, 
+                         loc, h, s)
       results.fit.fem[j, i] <- mean(fit$wbar.f)
     }
   }
@@ -270,7 +272,8 @@ for(i in 1:4){
     }
     if(j > 1){
       # looks at bias model
-      fit <-  getFitness(data = rare.female[[i]][[j-1]]$rd0.1$h0.5$s0.5, loc, h, s)
+      fit <-  getFitness(data = rare.female[[i]][[j-1]]$rd0.1$h0.5$s0.5, 
+                         loc, h, s)
       results.fit.mal[j, i] <- mean(fit$wbar.m)
     }
   }
@@ -286,7 +289,8 @@ for(i in 1:4){
     }
     if(j > 1){
       # looks at bias model
-      fit <-  getFitness(data = rare.female[[i]][[j-1]]$rd0.1$h0.5$s0.5, loc, h, s)
+      fit <-  getFitness(data = rare.female[[i]][[j-1]]$rd0.1$h0.5$s0.5, 
+                         loc, h, s)
       results.fit.fem[j, i] <- mean(fit$wbar.f)
     }
   }

@@ -4,7 +4,8 @@
 # P.I. Dr. Heath Blackmon
 # coleoguy@gmail.com
 
-# This script simulates instances in our XY model where females are the common sex
+# This script simulates instances in our XY model where females are the 
+# common sex
 
 # first we load our functions
 source("../functions/functions.R")
@@ -102,11 +103,15 @@ for(i in 1:length(females)){
             while(segregating){
               print(p)
               # this gets the allele frequencies we are interested in
-              resultA[p] <- GetFreq(pop, chrom="A", allele = 1, females=females[i], males=males)
-              resultY[p] <- GetFreq(pop, chrom="Y", allele = 1, females=females[i], males=males)
-              resultX[p] <- GetFreq(pop, chrom="X", allele = 2, females=females[i], males=males)
+              resultA[p] <- GetFreq(pop, chrom="A", allele = 1, 
+                                    females=females[i], males=males)
+              resultY[p] <- GetFreq(pop, chrom="Y", allele = 1, 
+                                    females=females[i], males=males)
+              resultX[p] <- GetFreq(pop, chrom="X", allele = 2, 
+                                    females=females[i], males=males)
               # this runs a generation of the simulation
-              pop <- Generation(pop, females=females[i], males=males, rd=rd[j], h=h[k], s=s[m])
+              pop <- Generation(pop, females=females[i], males=males, 
+                                rd=rd[j], h=h[k], s=s[m])
               # this checks to see if something is fixed in the pop
               if(resultY[p] %in% c(1,0) & resultX[p] %in% c(1,0)){
                 segregating <- F

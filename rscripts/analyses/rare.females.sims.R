@@ -102,11 +102,15 @@ for(i in 1:length(males)){
             while(segregating){
               #print(p)
               # this gets the allele frequencies we are interested in
-              resultA[p] <- GetFreq(pop, chrom="A", allele = 1, females=females, males=males[i])
-              resultY[p] <- GetFreq(pop, chrom="Y", allele = 1, females=females, males=males[i])
-              resultX[p] <- GetFreq(pop, chrom="X", allele = 2, females=females, males=males[i])
+              resultA[p] <- GetFreq(pop, chrom="A", allele = 1, 
+                                    females=females, males=males[i])
+              resultY[p] <- GetFreq(pop, chrom="Y", allele = 1, 
+                                    females=females, males=males[i])
+              resultX[p] <- GetFreq(pop, chrom="X", allele = 2, 
+                                    females=females, males=males[i])
               # this runs a generation of the simulation
-              pop <- Generation(pop, females=females, males=males[i], rd=rd[j], h=h[k], s=s[m])
+              pop <- Generation(pop, females=females, males=males[i], 
+                                rd=rd[j], h=h[k], s=s[m])
               # this checks to see if something is fixed in the pop
               if(resultY[p] %in% c(1,0) & resultX[p] %in% c(1,0)){
                 segregating <- F

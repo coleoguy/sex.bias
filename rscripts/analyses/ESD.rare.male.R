@@ -45,7 +45,7 @@ for(i in 1:length(comm.sex)){
 
       for(m in 1:length(h)){
         # how many cores to run on
-        registerDoMC(6)
+        registerDoMC(7)
         x <- foreach (iter = 1:replicates, .combine = "c") %dopar% {
 
           # sets up the initial population
@@ -66,7 +66,8 @@ for(i in 1:length(comm.sex)){
             fre <- GetFreq(pop, allele=0, males, females)
 
             # test whether we have met stopping conditions
-            if(fre == 0 | fre == 1 | counter == max.gens | round(old.fre, digits=5) == round(fre, digits=5)){
+            if(fre == 0 | fre == 1 | counter == max.gens | 
+               round(old.fre, digits=5) == round(fre, digits=5)){
               segregating <- F
             }
             counter <- counter + 1

@@ -4,7 +4,8 @@
 # P.I. Dr. Heath Blackmon
 # coleoguy@gmail.com
 
-# This script simulates instances in our haplodiploidy model where males are the common sex 
+# This script simulates instances in our haplodiploidy model where males 
+# are the common sex 
 
 library(doMC)
 source("functions.HD.R")

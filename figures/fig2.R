@@ -16,12 +16,14 @@ library(lattice)
 
 # Set your working directory to 'figures' folder
 
-# We will do the first elements by plotting them for the XY model (dominance and selection on the first 
+# We will do the first elements by plotting them for the XY model 
+# (dominance and selection on the first 
 # two plots)
 
 
-resultsplot <- read.csv("../../sex.bias/rscripts/parsing/Autosome.rare.male.csv", row.names = 1, 
-                        as.is = T, header = T, check.names = F)
+resultsplot <- 
+  read.csv("../../sex.bias/rscripts/parsing/Autosome.rare.male.csv", 
+           row.names = 1, as.is = T, header = T, check.names = F)
 resultsplot <- resultsplot[(resultsplot$rd == 0.5),]
 resultsplot <- resultsplot[(resultsplot$h != "h99"),]
 resultsplot <- resultsplot[(resultsplot$s == "s0.5"),]
@@ -32,7 +34,8 @@ resultsplot2$s <- c(0.5)
 colnames(resultsplot2) <- c("frequency", "common.sex", "osr", "rd", "h", "s")
 
 
-# Facet by dominance to show the effect of different genetic architectures. Comm.sex = 500. OSR = 1
+# Facet by dominance to show the effect of different genetic architectures. 
+# Comm.sex = 500. OSR = 1
 resultsplot3 <- resultsplot2[resultsplot2$osr == 1,]
 
 dominance <- ggplot(resultsplot3, aes(y=frequency, x=as.factor(h))) +
@@ -52,8 +55,9 @@ dominance <- ggplot(resultsplot3, aes(y=frequency, x=as.factor(h))) +
 
 # Facet by recombination distance but only plot h=0.5. Comm.sex = 500, OSR = 1
 
-resultsplot <- read.csv("../../sex.bias/rscripts/parsing/Autosome.rare.male.csv", row.names = 1, 
-                        as.is = T, header = T, check.names = F)
+resultsplot <- 
+  read.csv("../../sex.bias/rscripts/parsing/Autosome.rare.male.csv", 
+           row.names = 1, as.is = T, header = T, check.names = F)
 resultsplot <- resultsplot[(resultsplot$h != "h99"),]
 resultsplot <- resultsplot[(resultsplot$rd != 0),]
 resultsplot <- resultsplot[(resultsplot$s == "s0.5"),]
@@ -83,8 +87,9 @@ rd <- ggplot(resultsplot2, aes(y=1-frequency, x=as.factor(rd))) +
 
 # Facet by selection coefficients but only plot h=0.5. Comm.sex = 100. OSR = 0.2
 
-resultsplot <- read.csv("../../sex.bias/rscripts/parsing/Autosome.rare.male.csv", row.names = 1, 
-                        as.is = T, header = T, check.names = F)
+resultsplot <- 
+  read.csv("../../sex.bias/rscripts/parsing/Autosome.rare.male.csv", 
+           row.names = 1, as.is = T, header = T, check.names = F)
 resultsplot <- resultsplot[(resultsplot$rd == 0.5),]
 resultsplot <- resultsplot[(resultsplot$h == "h0.5"),]
 resultsplot <- resultsplot[(resultsplot$comm == 500),]
@@ -111,8 +116,9 @@ selection <- ggplot(resultsplot4, aes(y=1-frequency, x=as.factor(common.sex))) +
 
 # Autosomal. Common sex (females) = 500, s=0.5, h=0.5, rd=0.5
 
-resultsplot <- read.csv("../../sex.bias/rscripts/parsing/Autosome.rare.male.csv", row.names = 1, 
-                        as.is = T, header = T, check.names = F)
+resultsplot <- 
+  read.csv("../../sex.bias/rscripts/parsing/Autosome.rare.male.csv", 
+           row.names = 1, as.is = T, header = T, check.names = F)
 resultsplot <- resultsplot[(resultsplot$rd == 0.5),]
 resultsplot <- resultsplot[(resultsplot$h == "h0.5"),]
 resultsplot <- resultsplot[(resultsplot$s == "s0.5"),]
@@ -141,8 +147,9 @@ autosomal <- ggplot(resultsplot2, aes(y=1-frequency, x=as.factor(common.sex))) +
 
 # X chromosome. Common sex (females) = 500, s=0.5, h=0.5, rd=0.1
 
-resultsplot <- read.csv("../../sex.bias/rscripts/parsing/Xchrom.rare.male.csv", row.names = 1, 
-                        as.is = T, header = T, check.names = F)
+resultsplot <- 
+  read.csv("../../sex.bias/rscripts/parsing/Xchrom.rare.male.csv", 
+           row.names = 1, as.is = T, header = T, check.names = F)
 resultsplot <- resultsplot[(resultsplot$rd == 0.1),]
 resultsplot <- resultsplot[(resultsplot$h == "h0.5"),]
 resultsplot <- resultsplot[(resultsplot$s == "s0.5"),]
@@ -169,8 +176,9 @@ xchrom <- ggplot(resultsplot2, aes(y=frequency, x=as.factor(common.sex))) +
 
 # Y chromosome. Common sex (males) = 500, s=0.5, h=0.5, rd=0.1
 
-resultsplot <- read.csv("../../sex.bias/rscripts/parsing/Ychrom.rare.female.csv", row.names = 1, 
-                        as.is = T, header = T, check.names = F)
+resultsplot <- 
+  read.csv("../../sex.bias/rscripts/parsing/Ychrom.rare.female.csv", 
+           row.names = 1, as.is = T, header = T, check.names = F)
 resultsplot <- resultsplot[(resultsplot$rd == 0.1),]
 resultsplot <- resultsplot[(resultsplot$h == "h0.5"),]
 resultsplot <- resultsplot[(resultsplot$s == "s0.5"),]
@@ -219,8 +227,13 @@ results.500$osr[results.500$osr == "osr0.05"] <- 0.05
 hd.fem <- ggplot(results.500, aes(y=freq, x=as.factor(comm))) +
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha = .5) +
-  geom_violin(aes(fill=as.factor(osr)), stat="ydensity", position="dodge", alpha=0.8, trim=TRUE, 
-              scale="area") + theme_light() + 
+  geom_violin(aes(fill=as.factor(osr)), 
+              stat="ydensity", 
+              position="dodge", 
+              alpha=0.8, 
+              trim=TRUE, 
+              scale="area") + 
+  theme_light() + 
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -254,8 +267,13 @@ results.500$osr[results.500$osr == "osr0.05"] <- 0.05
 hd.mal <- ggplot(results.500, aes(y=1-freq, x=as.factor(comm))) + 
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha = .5) +
-  geom_violin(aes(fill=as.factor(osr)), stat="ydensity", position="dodge", alpha=0.8, trim=TRUE, 
-              scale="area") + theme_light() + 
+  geom_violin(aes(fill=as.factor(osr)), 
+              stat="ydensity", 
+              position="dodge", 
+              alpha=0.8, 
+              trim=TRUE, 
+              scale="area") + 
+  theme_light() + 
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -276,10 +294,15 @@ result.plot <- esd.rare.mal[(esd.rare.mal$s == 0.5),]
 result.plot <- result.plot[(result.plot$h == 0.5),]
 results.500 <- result.plot[(result.plot$num.com == 500),]
 
-esd.rare.mal <- ggplot(results.500, aes(y=1-freq0, x=as.factor(num.com))) + 
+esd.rare.mal <- 
+  ggplot(results.500, aes(y=1-freq0, x=as.factor(num.com))) + 
   ylim(0, 1) +
   geom_hline(yintercept = .5, alpha=.5) +
-  geom_violin(aes(fill=as.factor(OSR)), stat="ydensity", position="dodge", alpha=0.8, trim=TRUE, 
+  geom_violin(aes(fill=as.factor(OSR)), 
+              stat="ydensity", 
+              position="dodge", 
+              alpha=0.8, 
+              trim=TRUE, 
               scale="area") + 
   theme_light() + 
   theme(axis.title.x=element_blank(),
@@ -291,7 +314,8 @@ esd.rare.mal <- ggplot(results.500, aes(y=1-freq0, x=as.factor(num.com))) +
   scale_fill_viridis(discrete=TRUE) +
   scale_color_viridis(discrete=TRUE) 
 
-# Now transform them to grobs to plot the individual graphs into a single plot area.
+# Now transform them to grobs to plot the individual graphs into a 
+# single plot area.
 library(cowplot)
 g1 <- ggplotGrob(dominance)
 g2 <- ggplotGrob(rd)

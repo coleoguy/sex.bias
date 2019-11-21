@@ -4,11 +4,13 @@
 # P.I. Dr. Heath Blackmon
 # coleoguy@gmail.com
 
-# This script simulates a subset of conditions in our XY model where bias ranges from 0.2 to 0.05
-# and we test different recombination distances to determine more accurately the inflection point at
+# This script simulates a subset of conditions in our XY model where 
+# bias ranges from 0.2 to 0.05 and we test different recombination 
+# distances to determine more accurately the inflection point at
 # which significant changes in the fitness of one sex takes place.
 
-# More precisely, in these simulations males are the common sex and females are the rare sex.
+# More precisely, in these simulations males are the common sex and 
+# females are the rare sex.
 
 # first we load our functions
 source("../functions/functions.R")
@@ -20,8 +22,9 @@ males <- c(500, 100)
 # levels of bias to explore
 bias <- c(.2,.1, 0.05)
 # recombination distance
-rd <- c(0, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.22, 0.24, 0.26,
-        0.28, 0.3, 0.32, 0.34, 0.36, 0.38, 0.4, 0.42, 0.44, 0.46, 0.48, .5)
+rd <- 
+  c(0, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.22, 0.24, 
+    0.26, 0.28, 0.3, 0.32, 0.34, 0.36, 0.38, 0.4, 0.42, 0.44, 0.46, 0.48, .5)
 # dominance factor of allele 1
 h <- c(0, .5, 1, 99) # 99 indicates to run SSD model
 # selection strengths
@@ -107,11 +110,15 @@ for(i in 1:length(males)){
             while(segregating){
               #print(p)
               # this gets the allele frequencies we are interested in
-              resultA[p] <- GetFreq(pop, chrom="A", allele = 1, females=females, males=males[i])
-              resultY[p] <- GetFreq(pop, chrom="Y", allele = 1, females=females, males=males[i])
-              resultX[p] <- GetFreq(pop, chrom="X", allele = 2, females=females, males=males[i])
+              resultA[p] <- GetFreq(pop, chrom="A", allele = 1, 
+                                    females=females, males=males[i])
+              resultY[p] <- GetFreq(pop, chrom="Y", allele = 1, 
+                                    females=females, males=males[i])
+              resultX[p] <- GetFreq(pop, chrom="X", allele = 2, 
+                                    females=females, males=males[i])
               # this runs a generation of the simulation
-              pop <- Generation(pop, females=females, males=males[i], rd=rd[j], h=h[k], s=s[m])
+              pop <- Generation(pop, females=females, males=males[i], 
+                                rd=rd[j], h=h[k], s=s[m])
               # this checks to see if something is fixed in the pop
               if(resultY[p] %in% c(1,0) & resultX[p] %in% c(1,0)){
                 segregating <- F

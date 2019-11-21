@@ -6,7 +6,8 @@
 
 
 # This script has functions for the analysis of results
-# The intention being to assess the impact of allele frequency change in our simulations and how this
+# The intention being to assess the impact of allele frequency 
+# change in our simulations and how this
 # leads to feminization and masculinization of the genome.
 
 
@@ -25,8 +26,8 @@ getFitness <- function(data, loc, h, s){
       wf.a11 <- 1 / (1 + s)
       wf.a12 <- 1 / (1 + h * s)
       wf.a22 <- 1
-      # standardise by dividing the mean fitness by the highest fitness each sex can have 
-      # yielding relative fitnesses.
+      # standardise by dividing the mean fitness by the highest 
+      # fitness each sex can have yielding relative fitnesses.
       wmean.m <- (a11 * wm.a11 + a12 * wm.a12 + a22 * wm.a22)/wm.a11
       wmean.f <- (a11 * wf.a11 + a12 * wf.a12 + a22 * wf.a22)/wf.a22
     }
@@ -45,8 +46,8 @@ getFitness <- function(data, loc, h, s){
       wf.a11 <- 1 / (1 + s)
       wf.a12 <- 1 / (1 + h * s)
       wf.a22 <- 1
-      # standardise by dividing the mean fitness by the highest fitness each sex can have 
-      # yielding relative fitnesses.
+      # standardise by dividing the mean fitness by the highest fitness 
+      # each sex can have yielding relative fitnesses.
       wmean.m <- (m.a11 * wm.a11 + m.a12 * wm.a12 + m.a22 * wm.a22)/wm.a11
       wmean.f <- (f.a11 * wf.a11 + f.a12 * wf.a12 + f.a22 * wf.a22)/wf.a22
     }

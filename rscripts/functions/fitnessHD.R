@@ -4,8 +4,8 @@
 # P.I. Dr. Heath Blackmon
 # coleoguy@gmail.com
 
-# functions to assess the impact of allele frequency change in our haplodiploid model in terms of
-# feminisation or masculinisation of the genome
+# functions to assess the impact of allele frequency change in our 
+# haplodiploid model in terms of feminisation or masculinisation of the genome
 
 getFitness <- function(data, dom, s) {
   # data data frame of results

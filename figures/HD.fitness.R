@@ -4,7 +4,8 @@
 # P.I. Dr. Heath Blackmon
 # coleoguy@gmail.com
 
-# Script to calculate fitness differences between males and females under our haplodiploidy model.
+# Script to calculate fitness differences between males and females 
+# under our haplodiploidy model.
 library(tidyr)
 library(dplyr)
 library(ggplot2)
@@ -159,7 +160,8 @@ ggplot(resultsplot, aes(y = `Fitness difference`, x = osr)) + geom_point(
   size = 15,
   hjust = 0.5,
   vjust = 0.5
-)) + scale_size(range = c(1, 3)) + xlab("osr") + ylab("Fitness.difference") + scale_x_reverse() +
+)) + scale_size(range = c(1, 3)) + xlab("osr") + ylab("Fitness.difference") + 
+  scale_x_reverse() +
   scale_fill_viridis(discrete = TRUE) +
   scale_color_viridis(discrete = TRUE) 
 
@@ -302,5 +304,6 @@ ggplot(resultsplot, aes(y = `Fitness difference`, x = osr)) + geom_point(
   size = 15,
   hjust = 0.5,
   vjust = 0.5
-)) + scale_size(range = c(1, 3)) + xlab("osr") + ylab("Fitness.difference") + scale_x_reverse() + 
+)) + scale_size(range = c(1, 3)) + xlab("osr") + ylab("Fitness.difference") + 
+  scale_x_reverse() + 
   scale_fill_viridis(discrete = TRUE) + scale_color_viridis(discrete = TRUE)

@@ -46,8 +46,8 @@ GetParentsGeno <- function(pop, fit, females, males){
                         size = females,
                         replace = T,
                         prob=fit.mom)
-  # THIS IS WHERE THE PROBLEM IS WE ARE SAMPLING BASED ON FITNESS BUT EQUAL NUMBERS OF EACH
-  # then we sample males as dads based on fitness
+  # THIS IS WHERE THE PROBLEM IS WE ARE SAMPLING BASED ON FITNESS BUT EQUAL 
+  # NUMBERS OF EACH then we sample males as dads based on fitness
   dad.genomes <- sample(x.dad, 
                         size = males,
                         replace = T,

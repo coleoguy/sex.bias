@@ -4,8 +4,8 @@
 # P.I. Dr. Heath Blackmon
 # coleoguy@gmail.com
 
-# These simulations have not been run. I have written a new script so that we can have this
-# ticked off the list
+# These simulations have not been run. I have written a new script 
+# so that we can have this ticked off the list
 
 library(doMC)
 source("../functions/functions.esd.R")
@@ -68,7 +68,8 @@ for(i in 1:length(comm.sex)){
             fre <- GetFreq(pop, allele=1, males, females)
 
             # test whether we have met stopping conditions
-            if(fre == 0 | fre == 1 | counter == max.gens | round(old.fre, digits=5) == round(fre, digits=5)){
+            if(fre == 0 | fre == 1 | counter == max.gens | 
+               round(old.fre, digits=5) == round(fre, digits=5)){
               segregating <- F
             }
             counter <- counter + 1
