@@ -20,7 +20,7 @@ osr <- c(1, .8, .6, .4, .2, .1,.05)
 s <- c(0.1, 0.2, 0.5, 0.9)
 h <- c(0.0, 0.5, 1.0)
 replicates <- 1000
-max.gens <- 1500
+max.gens <- 500
 
 
 
@@ -67,9 +67,11 @@ for(i in 1:length(comm.sex)){
 
             # test whether we have met stopping conditions
             if(fre == 0 | fre == 1 | counter == max.gens ){
-              #|round(old.fre, digits=5) == round(fre, digits=5)
-              #THIS CODE HAS BEEN PULLED FOR TROUBLESHOOTING WAS ADDES AS POTENTIAL SPEED INCREASE BUT 
-              # COULD BE TERMINATING WHEN DO TO DRIFT YOU HAPPEN TO HAVE LITTLE CHANGE IN ONE GEN.
+              # |round(old.fre, digits=5) == round(fre, digits=5)
+              # THIS CODE HAS BEEN PULLED FOR TROUBLESHOOTING. IT WAS ADDED AS 
+              # POTENTIAL SPEED INCREASE BUT 
+              # COULD BE TERMINATING WHEN DUE TO DRIFT YOU HAPPEN TO HAVE 
+              # LITTLE CHANGE IN ONE GEN.
               segregating <- F
             }
             counter <- counter + 1
@@ -94,3 +96,4 @@ for(i in 1:length(comm.sex)){
 }
 
 write.csv(results, file = "ESD.raremal.csv")
+
