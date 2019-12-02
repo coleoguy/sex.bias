@@ -23,7 +23,7 @@ osr <- c(1, .8, .6, .4, .2, .1,.05)
 s <- c(0.1, 0.2, 0.5, 0.9)
 h <- c(0.0, 0.5, 1.0)
 replicates <- 1000
-max.gens <- 1000
+max.gens <- 500
 
 
 results <- as.data.frame(matrix(NA,0,6))
