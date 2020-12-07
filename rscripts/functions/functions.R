@@ -18,11 +18,12 @@ makeGenomes <- function(females, males, freqs=NULL){
   return(population)
 }
 
-
-measureFit <- function(pop, h, s){
+measureFit <- function(h, s){
   if(h!=99){
-    fit <- c(1,   1+h*s,   1+h*s,   1+s,
-             1, 1/(1+h*s), 1/(1+h*s), 1/(1+s))
+    hmal <- h
+    hfem <- 1-h
+    fit <- c(1,   1+hfem*s,   1+hfem*s,   1+s,
+             1+s, 1+hmal*s,   1+hmal*s,   1)
     return(fit)
   }
   if(h==99){
@@ -32,30 +33,27 @@ measureFit <- function(pop, h, s){
   }
 }
 
-
 GetParentsGeno <- function(pop, fit, females, males){
   x.mom <- c(rep(1, pop[1]), rep(2, pop[2]), rep(3, pop[3]), rep(4, pop[4]))
   x.dad <- c(rep(5, pop[5]), rep(6, pop[6]), rep(7, pop[7]), rep(8, pop[8]))
-  fit.mom <- c(rep(fit[1], pop[1]), rep(fit[2], pop[2]), 
+  fit.mom <- c(rep(fit[1], pop[1]), rep(fit[2], pop[2]),
                rep(fit[3], pop[3]), rep(fit[4], pop[4]))
-  fit.dad <- c(rep(fit[5], pop[5]), rep(fit[6], pop[6]), 
+  fit.dad <- c(rep(fit[5], pop[5]), rep(fit[6], pop[6]),
                rep(fit[7], pop[7]), rep(fit[8], pop[8]))
   # this effectively performs viability selection
   # so we sample females as moms based on fitness
-  mom.genomes <- sample(x = x.mom, 
+  mom.genomes <- sample(x = x.mom,
                         size = females,
                         replace = T,
                         prob=fit.mom)
-  # THIS IS WHERE THE PROBLEM IS WE ARE SAMPLING BASED ON FITNESS BUT EQUAL 
-  # NUMBERS OF EACH then we sample males as dads based on fitness
-  dad.genomes <- sample(x.dad, 
+  dad.genomes <- sample(x.dad,
                         size = males,
                         replace = T,
                         prob=fit.dad)
   # we can simplify our coding a bit by taking into consideration that
   # there are 4 genotypes of moms and 4 genotypes of dads lets make a
-  # table that allows us to draw sperm and eggs based on the genotype 
-  # distribution of parents and we will account for recombination in 
+  # table that allows us to draw sperm and eggs based on the genotype
+  # distribution of parents and we will account for recombination in
   # this step as well.
   mom.geno <- rep(0, 4)
   names(mom.geno) <- c("X1X1", "X1X2", "X2X1", "X2X2")
@@ -69,7 +67,7 @@ GetParentsGeno <- function(pop, fit, females, males){
   dad.geno[2] <- sum(dad.genomes==6)
   dad.geno[3] <- sum(dad.genomes==7)
   dad.geno[4] <- sum(dad.genomes==8)
-  
+
   parents <- list(mom.geno, dad.geno)
   names(parents) <- c("moms", "dads")
   return(parents)
@@ -81,7 +79,7 @@ makeEggs <- function(mom.geno){
   eggs[1] <- mom.geno[1] +
     0.5 * mom.geno[2] +
     0.5 * mom.geno[3]
-  eggs[2] <- mom.geno[4] + 
+  eggs[2] <- mom.geno[4] +
     0.5 * mom.geno[2] +
     0.5 * mom.geno[3]
   return(eggs)
@@ -93,13 +91,13 @@ makeSperm <- function(dad.geno, rd){
   sperm[1] <- 0.5 * dad.geno[1] +
     0.5 * dad.geno[2] * (1 - rd)  +
     0.5 * dad.geno[3] * rd
-  sperm[2] <- 0.5 * dad.geno[4] + 
+  sperm[2] <- 0.5 * dad.geno[4] +
     0.5 * dad.geno[2] * rd +
     0.5 * dad.geno[3] * (1 - rd)
-  sperm[3] <- 0.5 * dad.geno[1] + 
+  sperm[3] <- 0.5 * dad.geno[1] +
     0.5 * dad.geno[2] * rd +
     0.5 * dad.geno[3] * (1 - rd)
-  sperm[4] <- 0.5 * dad.geno[4] + 
+  sperm[4] <- 0.5 * dad.geno[4] +
     0.5 * dad.geno[2] * (1 - rd)  +
     0.5 * dad.geno[3] * rd
   return(sperm)
@@ -122,7 +120,7 @@ makeNewPop <- function(pop, eggs, sperm, females, males){
 }
 
 Generation <- function(pop, females, males, rd, h, s){
-  fit <- measureFit(pop, h, s)
+  fit <- measureFit(h, s)
   parents <- GetParentsGeno(pop, fit, females, males)
   eggs <- makeEggs(parents$moms)
   sperm <- makeSperm(parents$dads, rd)
@@ -143,11 +141,11 @@ GetFreq <- function(pop, chrom, allele, males, females){
   }
   if(chrom == "X"){
     if(allele == 1){
-      ones <- (pop[1] * 2 + pop[2] + pop[3] + pop[5] + pop[6]) / 
+      ones <- (pop[1] * 2 + pop[2] + pop[3] + pop[5] + pop[6]) /
         (males + females * 2)
     }
     if(allele == 2){
-      twos <- (pop[4] * 2 + pop[2] + pop[3] + pop[7] + pop[8]) / 
+      twos <- (pop[4] * 2 + pop[2] + pop[3] + pop[7] + pop[8]) /
         (males + females * 2)
     }
   }
