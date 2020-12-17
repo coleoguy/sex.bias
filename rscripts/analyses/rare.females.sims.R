@@ -4,27 +4,39 @@
 # first we load our functions
 source("../functions/functions.R")
 
-# here we set up all the variables that we will explore in our 
+# here we set up all the variables that we will explore in our
 # simulations below
 # numbers of males
 males <- c(1000)#males <- c(50, 100, 500, 1000)
 # levels of bias to explore
-bias <- c(1, .8,.6,.4,.2,.1,.05)
+bias <- c(1, .8,.6, .4, .2, .1, .05)
 # recombination distance
 rd <- c(.2, .5)
 # dominance factor of allele 1
+# allele 1 is fit for males
+# allele 2 is fit for females
 h <- c(0, .5, 1, 99) # 99 indicates to run SSD model
 # selection strengths
 s <- c(.1,.5,.9)
 # number of trials to run
-iter <- 1000
+iter <- 100
+# max generations to run
+gens <- 1000
 gen.counter <- c()
-# allele 1 is fit for males
-# allele 2 is fit for females
 
 # this allows the program to be run on multiple CPUs
+# MAC version
 library(doMC)
-registerDoMC(4)
+registerDoMC(14)
+
+# Windows version
+# library(doParallel)
+# library(parallel)
+# no_cores <- detectCores(logical = TRUE)
+# number at the end here determines the number of cores left free
+# cl <- makeCluster(no_cores-2)
+# registerDoParallel(cl)
+
 
 # these are used mainly for trouble shooting
 # normally these are iterated in the loops below
@@ -59,7 +71,7 @@ for(i in 1:length(males)){
             females <- females.each*4
             # here we make the initial population with all equal
             # frequencies of each genotype in males and females
-            pop <- makeGenomes(females, males, 
+            pop <- makeGenomes(females, males,
                                freqs = c(rep(females.each, 4),
                                          rep(males[i]/4, 4)))
             # this sets up the contain for a given sim
@@ -68,19 +80,19 @@ for(i in 1:length(males)){
             segregating <- T
             # this is just a counter
             c.ite <- 1
-            # this while loop will run till something fixes or 
+            # this while loop will run till something fixes or
             # until we reach 2000 generations
             while(segregating){
               #print(p)
               # this gets the allele frequencies we are interested in
-              resultA[c.ite] <- GetFreq(pop, chrom="A", allele = 1, 
+              resultA[c.ite] <- GetFreq(pop, chrom="A", allele = 1,
                                     females=females, males=males[i])
-              resultY[c.ite] <- GetFreq(pop, chrom="Y", allele = 1, 
+              resultY[c.ite] <- GetFreq(pop, chrom="Y", allele = 1,
                                     females=females, males=males[i])
-              resultX[c.ite] <- GetFreq(pop, chrom="X", allele = 2, 
+              resultX[c.ite] <- GetFreq(pop, chrom="X", allele = 2,
                                     females=females, males=males[i])
               # this runs a generation of the simulation
-              pop <- Generation(pop, females=females, males=males[i], 
+              pop <- Generation(pop, females=females, males=males[i],
                                 rd=rd[j], h=h[k], s=s[m])
               # this checks to see if something is fixed in the pop
               if(resultY[c.ite] %in% c(1,0) & resultX[c.ite] %in% c(1,0)){
@@ -89,8 +101,8 @@ for(i in 1:length(males)){
                 X <- resultX[c.ite]
                 Y <- resultY[c.ite]
               }
-              # this checks to see if we have run 2000 generations
-              if(c.ite > 1000){
+              # this checks to see if we have run gens generations
+              if(c.ite > gens){
                 segregating <- F
                 A <- resultA[c.ite]
                 X <- resultX[c.ite]

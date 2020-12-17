@@ -1,10 +1,14 @@
-# Julio Rincones Gamboa
-# jgamboa@bio.tamu.edu
-# j.a.r.gamboa@gmail.com
-# P.I. Dr. Heath Blackmon
-# coleoguy@gmail.com
 # simulating populations with sex bias
 # and sexual antagonism
+
+Generation <- function(pop, females, males, rd, h, s){
+  fit <- measureFit(h, s)
+  parents <- GetParentsGeno(pop, fit, females, males)
+  eggs <- makeEggs(parents$moms)
+  sperm <- makeSperm(parents$dads, rd)
+  pop <- makeNewPop(pop, eggs, sperm, females, males)
+  return(pop)
+}
 
 makeGenomes <- function(females, males, freqs=NULL){
   population <- rep(0, 8)
@@ -50,11 +54,6 @@ GetParentsGeno <- function(pop, fit, females, males){
                         size = males,
                         replace = T,
                         prob=fit.dad)
-  # we can simplify our coding a bit by taking into consideration that
-  # there are 4 genotypes of moms and 4 genotypes of dads lets make a
-  # table that allows us to draw sperm and eggs based on the genotype
-  # distribution of parents and we will account for recombination in
-  # this step as well.
   mom.geno <- rep(0, 4)
   names(mom.geno) <- c("X1X1", "X1X2", "X2X1", "X2X2")
   mom.geno[1] <- sum(mom.genomes==1)
@@ -116,15 +115,6 @@ makeNewPop <- function(pop, eggs, sperm, females, males){
   pop[6] <- sum(x == "1 2")
   pop[7] <- sum(x == "2 1")
   pop[8] <- sum(x == "2 2")
-  return(pop)
-}
-
-Generation <- function(pop, females, males, rd, h, s){
-  fit <- measureFit(h, s)
-  parents <- GetParentsGeno(pop, fit, females, males)
-  eggs <- makeEggs(parents$moms)
-  sperm <- makeSperm(parents$dads, rd)
-  pop <- makeNewPop(pop, eggs, sperm, females, males)
   return(pop)
 }
 
