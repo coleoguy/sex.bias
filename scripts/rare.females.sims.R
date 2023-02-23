@@ -140,10 +140,10 @@ for(i in 1:length(males)){
     }
   }
 }
-write.csv(results, file="rare.female.250.iter.csv")
+write.csv(results, file="rare.female.250.iter.csv", row.names=FALSE)
 
 
-##
+stopCluster(cl)
 ##
 
 #rm(list=ls()[-19])

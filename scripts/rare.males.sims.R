@@ -135,9 +135,9 @@ for(i in 1:length(females)){
     }
   }
 }
-write.csv(results, file="rare.male.250.iter,csv")
+write.csv(results, file="rare.male.250.iter.csv", row.names = FALSE)
 
-##
+stopluster(cl)
 ##
 
 #rm(list=ls()[-19])
