@@ -37,27 +37,31 @@ osrs <- c(1,.8,.6,.4,.2,.1,.05)
 mean.results.rare.male.aut <- as.data.frame(matrix(NA,0,8))
 colnames(mean.results.rare.male.aut) <- c("common.num", "OSR","h","s","gens","mean.freq", "prob.ben","prob.del")
 #com.nums <- c(50,100,500,1000)
+
+#On autosome or linked to sex chr
 aut<-dat[dat$rd == 0.5,]
 sex<-dat[dat$rd == 0.2,]
 row.num<-1
 str(sex)
 
+
+#First 0.5 (autosome)
 for(i in 1:4){#pop
   for(j in 1:7){#OSRs
     for(k in 1:4){#hs
       for(l in 1:3){#ss
-        temp.cur<-aut[aut$females ==pop[i],]
-        temp.cur<-temp.cur[temp.cur$OSR ==osrs[j],]
-        temp.cur<-temp.cur[temp.cur$h == hs[k],]
-        temp.cur<-temp.cur[temp.cur$s == ss[l],]
-        mean.results.rare.male.aut[row.num, 1]<-pop[i]
-        mean.results.rare.male.aut[row.num, 2]<-osrs[j]
-        mean.results.rare.male.aut[row.num, 3]<-hs[k]
-        mean.results.rare.male.aut[row.num, 4]<-ss[l]
-        mean.results.rare.male.aut[row.num, 5]<-mean(temp.cur$gens)
-        mean.results.rare.male.aut[row.num, 6]<-mean(temp.cur$A)
-        mean.results.rare.male.aut[row.num, 7]<-sum(temp.cur$A == 1)/length(temp.cur$A)
-        mean.results.rare.male.aut[row.num, 8]<-sum(temp.cur$A == 0)/length(temp.cur$A)
+        temp.cur<-aut[aut$females ==pop[i],] #population number of common sex
+        temp.cur<-temp.cur[temp.cur$OSR ==osrs[j],] #OSR
+        temp.cur<-temp.cur[temp.cur$h == hs[k],] #dominance factor
+        temp.cur<-temp.cur[temp.cur$s == ss[l],] #selection pressure
+        mean.results.rare.male.aut[row.num, 1]<-pop[i] #Population of common sex into col 1
+        mean.results.rare.male.aut[row.num, 2]<-osrs[j] #OSR into col 2
+        mean.results.rare.male.aut[row.num, 3]<-hs[k] #Dominance factor into col 3
+        mean.results.rare.male.aut[row.num, 4]<-ss[l] #Selection pressure into col 4
+        mean.results.rare.male.aut[row.num, 5]<-mean(temp.cur$gens) #Average number of generations over the simulations
+        mean.results.rare.male.aut[row.num, 6]<-mean(temp.cur$A) #Average freq over simulations
+        mean.results.rare.male.aut[row.num, 7]<-sum(temp.cur$A == 1)/length(temp.cur$A) #prob beneficial ?
+        mean.results.rare.male.aut[row.num, 8]<-sum(temp.cur$A == 0)/length(temp.cur$A) #prob deleted?
         row.num<-row.num + 1
       }
     }
@@ -67,7 +71,7 @@ for(i in 1:4){#pop
 str(mean.results.rare.male.aut)
 mean.results.rare.male.aut$common.num<-as.factor(mean.results.rare.male.aut$common.num)
 #####rare male autosome frequency plot####
-rare.male.aut.freq<-ggplot(mean.results.rare.male.aut, aes(y=mean.freq, x=OSR))+geom_line(aes(colour=common.num), size=1)+ylim(c(0,1))+
+rare.male.aut.freq<-ggplot(mean.results.rare.male.aut, aes(y=mean.freq, x=OSR))+geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1))+
   geom_point(aes(shape=common.num, fill=common.num), stat="identity", position="identity", size=3)+
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~s, labeller=label_both)+theme_bw()+ theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
@@ -76,7 +80,7 @@ rare.male.aut.freq<-ggplot(mean.results.rare.male.aut, aes(y=mean.freq, x=OSR))+
 rare.male.aut.freq
 
 ####rare male autosome prob plot####
-rare.male.aut.prob<-ggplot(mean.results.rare.male.aut, aes(y=prob.ben, x=OSR))+geom_line(aes(colour=common.num), size=1)+ylim(c(0,1))+
+rare.male.aut.prob<-ggplot(mean.results.rare.male.aut, aes(y=prob.ben, x=OSR))+geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1))+
   geom_point(aes(shape=common.num, fill=common.num), stat="identity", position="identity", size=3)+
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~s, labeller=label_both)+theme_bw()+ theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
@@ -84,7 +88,7 @@ rare.male.aut.prob<-ggplot(mean.results.rare.male.aut, aes(y=prob.ben, x=OSR))+g
   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
 rare.male.aut.prob
 
-####now to look with rd 0.2####
+####now to look with rd 0.2 (sex chr) ####
 
 
 mean.results.rare.male.sex.x <- as.data.frame(matrix(NA,0,8))
@@ -190,7 +194,7 @@ str(mean.results.rare.female.aut)
 mean.results.rare.female.aut$common.num<-as.factor(mean.results.rare.female.aut$common.num)
 
 #####rare female plots aut freq####
-rare.female.aut.freq<-ggplot(mean.results.rare.female.aut, aes(y=mean.freq, x=OSR))+geom_line(aes(colour=common.num), size=1)+ylim(c(0,1))+
+rare.female.aut.freq<-ggplot(mean.results.rare.female.aut, aes(y=mean.freq, x=OSR))+geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1))+
   geom_point(aes(shape=common.num, fill=common.num), stat="identity", position="identity", size=3)+
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~s, labeller = label_both)+theme_bw()+ theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
@@ -199,7 +203,7 @@ rare.female.aut.freq<-ggplot(mean.results.rare.female.aut, aes(y=mean.freq, x=OS
 rare.female.aut.freq
 
 ####rare female plots aut prob####
-rare.female.aut.prob<-ggplot(mean.results.rare.female.aut, aes(y=prob.ben, x=OSR))+geom_line(aes(colour=common.num), size=1)+ylim(c(0,1))+
+rare.female.aut.prob<-ggplot(mean.results.rare.female.aut, aes(y=prob.ben, x=OSR))+geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1))+
   geom_point(aes(shape=common.num, fill=common.num), stat="identity", position="identity", size=3)+
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~s, labeller=label_both)+theme_bw()+ theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
@@ -317,7 +321,7 @@ rare.female.sex.y.prob
 
 ####making new plots for paper####
 
-#I want to use rare females with s = 0.9 and no h =99 and rd = 0.5
+#I want to use rare females with s = 0.9 and no h =99 and rd = 0.5 (autosome)
 str(datfem)
 datfem$h<-as.numeric(datfem$h)
 #males has 50, 100, 500, 1000
@@ -331,6 +335,7 @@ rds<-c(0.2, 0.5)
 ss<-c(0.1, 0.5, 0.9)
 hs<-c(0, 0.5, 1)
 osrs <- c(1,.8,.6,.4,.2,.1,.05)
+
 # setup mean results
 female.aut.dat <- as.data.frame(matrix(NA,0,7))
 colnames(female.aut.dat) <- c("common.num", "OSR","h","gens","mean.freq", "prob.ben","prob.del")
@@ -364,7 +369,7 @@ female.aut.dat$common.num<-as.factor(female.aut.dat$common.num)
 
 
 
-g1<-ggplot(female.aut.dat, aes(y=prob.ben, x=OSR))+geom_line(aes(colour=common.num), size=1)+
+g1<-ggplot(female.aut.dat, aes(y=prob.ben, x=OSR))+geom_line(aes(colour=common.num), linewidth=1)+
   geom_point(aes(shape=common.num, fill=common.num), stat="identity", position="identity", size=3)+
   scale_color_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~ .)+theme_bw()+ theme(text=element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+theme(axis.title.y = element_blank())+
@@ -372,7 +377,7 @@ g1<-ggplot(female.aut.dat, aes(y=prob.ben, x=OSR))+geom_line(aes(colour=common.n
   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
 g1
 
-g2<-ggplot(female.aut.dat, aes(y=mean.freq, x=OSR))+geom_line(aes(colour=common.num), size=1)+
+g2<-ggplot(female.aut.dat, aes(y=mean.freq, x=OSR))+geom_line(aes(colour=common.num), linewidth=1)+
   geom_point(aes(shape=common.num, fill=common.num), stat="identity", position="identity", size=3)+
   scale_color_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~ .)+theme_bw()+ theme(text=element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+theme(axis.title.y = element_blank())+

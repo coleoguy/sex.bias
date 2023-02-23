@@ -8,13 +8,12 @@ library(ggplot2)
 library(viridis)
 
 #What is foo.prob and foo.freg? 
-#Y is original set as value, what is value???
+#Y is original set as value, what is value??? - I changed it to either prob.ben or mean.freq
 
-#ben stands for ben?
+#ben stands for benefit stat? Like prob.ben 
 
 foo.prob.ben$common.num<-as.factor(foo.prob.ben$common.num)
-
-g1<-ggplot(foo.prob, aes(y=prob.ben, x=OSR))+geom_line(aes(colour=common.num), size=1)+
+g1<-ggplot(female.aut.dat, aes(y=prob.ben, x=OSR))+geom_line(aes(colour=common.num), size=1)+
   geom_point(aes(shape=common.num, fill=common.num), stat="identity", position="identity", size=3)+
   scale_color_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~ .)+theme_bw()+ theme(text=element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+theme(axis.title.y = element_blank())+
@@ -22,7 +21,7 @@ g1<-ggplot(foo.prob, aes(y=prob.ben, x=OSR))+geom_line(aes(colour=common.num), s
   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
 g1
 foo.freq$common.num<-as.factor(foo.freq$common.num)
-g2<-ggplot(foo.freq, aes(y=value, x=OSR))+geom_line(aes(colour=common.num), size=1)+
+g2<-ggplot(female.aut.dat, aes(y=mean.freq, x=OSR))+geom_line(aes(colour=common.num), size=1)+
   geom_point(aes(shape=common.num, fill=common.num), stat="identity", position="identity", size=3)+
   scale_color_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~ .)+theme_bw()+ theme(text=element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+theme(axis.title.y = element_blank())+
@@ -35,6 +34,8 @@ final
 
 
 ###for the next plot
+
+#Where does gen.avgd come from? What data frame/file? #Where is fitness calcualted?
 
 gen.avgd$common<-as.factor(gen.avgd$common)
 ggplot(gen.avgd, aes(y=fitness, x=OSR)) + 
