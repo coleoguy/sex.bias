@@ -82,10 +82,12 @@ for(i in 1:length(females)){
             resultY <- resultX <- resultA <- c()
             # this will be true unless an allele has fixed as the SAL
             segregating <- T
+            
             # this is just a counter
-            c.ite <- 1
+            c.ite <- 0 #first pop is 0, then simulate up to 1000 generations
             # this while loop will run till something fixes or
-            # until we reach 2000 generations
+            # until we reach 1000 generations
+            
             while(segregating){
               #print(p)
               # this gets the allele frequencies we are interested in
@@ -98,6 +100,8 @@ for(i in 1:length(females)){
               # this runs a generation of the simulation
               pop <- Generation(pop, males=males, females=females[i],
                                 rd=rd[j], h=h[k], s=s[m])
+              # this increments our counter
+              c.ite <- c.ite + 1
               # this checks to see if something is fixed in the pop
               if(resultY[c.ite] %in% c(1,0) & resultX[c.ite] %in% c(1,0)){
                 segregating <- F
@@ -112,8 +116,7 @@ for(i in 1:length(females)){
                 X <- resultX[c.ite]
                 Y <- resultY[c.ite]
               }
-              # this increments our counter
-              c.ite <- c.ite + 1
+              
             }
             # this puts the final result of our sim together
             c(X, Y, A, c.ite)
