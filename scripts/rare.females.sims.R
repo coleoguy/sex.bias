@@ -89,11 +89,10 @@ for(i in 1:length(males)){
             segregating <- T
             
             # this is just a counter
-            c.ite <- 0 #first pop is 0, then simulate up to 1000 generations
-            # this while loop will run till something fixes or
-            # until we reach 1000 generations
+            c.ite <- 0 
             
             while(segregating){
+              c.ite <- c.ite + 1 
               #print(p)
               # this gets the allele frequencies we are interested in
               resultA[c.ite] <- GetFreq(pop, chrom="A", allele = 1,
@@ -113,7 +112,7 @@ for(i in 1:length(males)){
                 Y <- resultY[c.ite]
               }
               # this checks to see if we have run gens generations
-              if(c.ite > gens){
+              if(c.ite == gens){
                 segregating <- F
                 A <- resultA[c.ite]
                 X <- resultX[c.ite]
