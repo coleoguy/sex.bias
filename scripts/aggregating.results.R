@@ -1,15 +1,15 @@
 #Read in files
-rare.fem <- read.csv("rare.female.250.iter.csv")[,-1]
+rare.fem <- read.csv("rare.female.250.iter.csv")[,-1] #this is expecting column 1 to be row Ns from previously unfixed script
 rare.mal <- read.csv("rare.male.250.iter.csv")[,-1]
 
 #Aggregate data
-rare.fem.ag <- aggregate(rare.mal, 
+rare.fem.ag <- aggregate(rare.fem, 
                          by=list(Males = rare.fem$males,
                                  OSR = rare.fem$OSR,
                                  Recomb = rare.fem$rd,
                                  h = rare.fem$h,
                                  s = rare.fem$s),
-                         FUN = mean)[,1:8]
+                         mean)[,1:8]
 rare.mal.ag <- aggregate(rare.mal, 
                          by=list(Females = rare.mal$females,
                                  OSR = rare.mal$OSR,
@@ -31,7 +31,7 @@ trial <- rare.mal.ag[rare.mal.ag$h == .5,]
 trial <- trial[trial$s == .5,]
 trial <- trial[trial$Recomb == .2,]
 
-#subtracting smallest number from each sampe to set it starting at 0
+#subtracting smallest number from each samplle to set it starting at 0
 trial$X <- trial$X - trial$X[28]
 trial$Y <- trial$Y - trial$Y[28]
 
@@ -40,5 +40,6 @@ min(trial$X)
 #Checking that we have seven for each trial
 plot(x= trial$Females,
      y= trial$Males)
+
 
 
