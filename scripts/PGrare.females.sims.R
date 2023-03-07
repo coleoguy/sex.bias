@@ -88,7 +88,7 @@ for(i in 1:length(males)){
             # this will be true unless an allele has fixed as the SAL
             segregating <- T
             # this is just a counter
-            c.ite <- 1
+            c.ite <- 0
             # this while loop will run till something fixes or
             # until we reach 1000 generations
             

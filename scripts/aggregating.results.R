@@ -1,6 +1,6 @@
 #Read in files
-rare.fem <- read.csv("rare.female.250.iter.csv")[,-1] #this is expecting column 1 to be row Ns from previously unfixed script
-rare.mal <- read.csv("rare.male.250.iter.csv")[,-1]
+rare.fem <- read.csv("rare.female.250.iter.csv") #this is expecting column 1 to be row Ns from previously unfixed script
+rare.mal <- read.csv("rare.male.250.iter.csv")
 
 #Aggregate data
 rare.fem.ag <- aggregate(rare.fem, 
@@ -31,7 +31,7 @@ trial <- rare.mal.ag[rare.mal.ag$h == .5,]
 trial <- trial[trial$s == .5,]
 trial <- trial[trial$Recomb == .2,]
 
-#subtracting smallest number from each samplle to set it starting at 0
+#subtracting smallest number from each sample to set it starting at 0
 trial$X <- trial$X - trial$X[28]
 trial$Y <- trial$Y - trial$Y[28]
 

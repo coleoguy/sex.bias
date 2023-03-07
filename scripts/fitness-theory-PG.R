@@ -1,6 +1,6 @@
 mal <- read.csv("rare.male.250.iter.csv", as.is=T)
-bar <- mal[43085,2:10]
-bar <- mal[98046, 2:10]
+bar <- mal[43085,]
+bar <- mal[98046, ]
 bar
 
 s <- bar$s
@@ -14,8 +14,8 @@ h = 1
 #X is beneficial
 
 bar$X^2 * 1 +
-  2*bar$X*(1-bar$X) * (1+h*s) +
-  (1-bar$X)^2 * (1 + s)
+  2*bar$X*(1-bar$X) * (1/(1+h*s)) +
+  (1-bar$X)^2 * (1/(1 + s))
 
 # XY
 h =0
@@ -47,4 +47,4 @@ points(wmal/1~s,col="green")
 
 
 
-temp.cur<-dat[dat$gens > 1000,]
+temp.cur<-mal[mal$gens == 1000,]
