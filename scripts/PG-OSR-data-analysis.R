@@ -102,13 +102,18 @@ fitness <- male.aut.result[male.aut.result$h != 99,]
 #checking that the degree of fitness change is appropriate and follows a similar line for both species
 sort.mfit <- fitness[order(fitness$Male.Fit, fitness$Female.Fit),]
 sp <- seq(from=.01, to=.99, length.out=252)
-plot(1/sort.mfit$Female.Fit~sp, col = "red", ylab = "Fitness Impact")
-points(sort.mfit$Male.Fit/1~sp, col="blue")
+plot(1/sort.mfit$Female.Fit~sp, col = "red", ylab = "Fitness Impact") + points(sort.mfit$Male.Fit/1~sp, col="blue")
 
 
 
 male.aut.result$common.num<-as.factor(male.aut.result$common.num)
+male.aut.result$h <- as.factor(male.aut.result$h)
+male.aut.result$s <- as.factor(male.aut.result$s)
+
 fitness$common.num<-as.factor(fitness$common.num)
+fitness$s<-as.factor(fitness$s)
+fitness$h<-as.factor(fitness$h)
+
 
 str(male.aut.result)
 str(fitness)
@@ -118,37 +123,63 @@ male.aut.result$s <- as.factor(male.aut.result$s)
 
 
 #Only common.num as factor
-rare.male.aut.freq <- ggplot(male.aut.result, aes(y=A, x=OSR))+ 
+# rare.male.aut.freq.cm <- ggplot(male.aut.result, aes(y=A, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Mean Frequency of A")+labs("dominance")+ggtitle("'A' Frequency - commonN: Rare Male, RD = 0.5")
+# rare.male.aut.freq.cm
+
+rare.male.aut.freq.s <- ggplot(male.aut.result, aes(y=A, x=OSR))+ 
   geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
   geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Mean Frequency of A")+labs("dominance")+ggtitle("'A' Frequency: Rare Male, RD = 0.5")
-rare.male.aut.freq
+rare.male.aut.freq.s
 
-rare.male.aut.ben <- ggplot(male.aut.result, aes(y=prob.ben, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+# rare.male.aut.ben.cm <- ggplot(male.aut.result, aes(y=prob.ben, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Female)")+ggtitle("Prob A Fixed - commonN: Rare Male, RD = 0.5")+
+#   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
+# rare.male.aut.ben.cm
+
+rare.male.aut.ben.s <- ggplot(male.aut.result, aes(y=prob.ben, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Female)")+ggtitle("Prob A Fixed: Rare Male, RD = 0.5")+
-  labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.male.aut.ben
+  xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Female)")+ggtitle("Prob A Fixed: Rare Male, RD = 0.5")
+rare.male.aut.ben.s
 
+#Fitness
 
-rare.male.aut.fit <- ggplot(fitness, aes(y=Fit.Diff, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+# rare.male.aut.fit.cm <- ggplot(fitness, aes(y=Fit.Diff, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Fitness Difference")+labs("Number of Common Sex (Female)")+ggtitle("'A' Fitness -CN: Rare Male, RD = 0.5")+
+#   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
+# rare.male.aut.fit.cm
+
+rare.male.aut.fit.s <- ggplot(fitness, aes(y=Fit.Diff, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("Fitness Difference")+labs("Number of Common Sex (Female)")+ggtitle("'A' Fitness: Rare Male, RD = 0.5")+
-  labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.male.aut.fit
-
-
+  xlab("Operational Sex Ratio")+ylab("Fitness Difference")+labs("Number of Common Sex (Female)")+ggtitle("'A' Fitness: Rare Male, RD = 0.5")
+rare.male.aut.fit.s
 
 
 #### Male Sex Chr ####
@@ -216,79 +247,126 @@ fitness.male.Sex <- male.sex.result[male.sex.result$h != 99,]
 
 #checking that the degree of fitness change is appropriate and follows a similar line for both species
 #fitness is very skewed this time!
-sort.mfit <- fitness.male.Sex[order(fitness.male.Sex$Male.Fit, fitness.male.Sex$Female.Fit),]
-sort.mfit <- fitness.male.Sex[order(fitness.male.Sex$Female.Fit, fitness.male.Sex$Male.Fit),]
+sort.sex.mfit <- fitness.male.Sex[order(fitness.male.Sex$Male.Fit, fitness.male.Sex$Female.Fit),]
+sort.sex.mfit <- fitness.male.Sex[order(fitness.male.Sex$Female.Fit, fitness.male.Sex$Male.Fit),]
 sp <- seq(from=.01, to=.99, length.out=252)
-plot(1/sort.mfit$Female.Fit~sp, col = "red", ylab = "Fitness Impact")
-points(sort.mfit$Male.Fit/1~sp, col="blue")
+plot(1/sort.sex.mfit$Female.Fit~sp, col = "red", ylab = "Fitness Impact", ylim = c(1,2))
+points(sort.sex.mfit$Male.Fit/1~sp, col="blue")
 
 
 
 male.sex.result$common.num<-as.factor(male.sex.result$common.num)
+male.sex.result$s<-as.factor(male.sex.result$s)
+male.sex.result$h<-as.factor(male.sex.result$h)
+
+
 fitness.male.Sex$common.num<-as.factor(fitness.male.Sex$common.num)
+fitness.male.Sex$s<-as.factor(fitness.male.Sex$s)
+fitness.male.Sex$h<-as.factor(fitness.male.Sex$h)
+
 
 str(fitness.male.Sex)
 
 
-#Looking at X chromosome first
-rare.male.sex.freq.X <- ggplot(male.sex.result, aes(y=X, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#Looking at X chromosome 
+
+# rare.male.sex.freq.X.cm <- ggplot(male.sex.result, aes(y=X, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("X Mean Frequency")+labs("Number of Common Sex (Female)")+ggtitle("'X' Frequency -CN: Rare Male, RD = 0.2")+
+#   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
+# rare.male.sex.freq.X.cm
+
+rare.male.sex.freq.X.s <- ggplot(male.sex.result, aes(y=X, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("X Mean Frequency")+labs("Number of Common Sex (Female)")+ggtitle("'X' Frequency: Rare Male, RD = 0.2")+
-  labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.male.sex.freq.X
+  xlab("Operational Sex Ratio")+ylab("X Mean Frequency")+labs("Number of Common Sex (Female)")+ggtitle("'X' Frequency: Rare Male, RD = 0.2")
+rare.male.sex.freq.X.s
 
-rare.male.sex.ben.X <- ggplot(male.sex.result, aes(y=prob.X.ben, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+# rare.male.sex.ben.X.cm <- ggplot(male.sex.result, aes(y=prob.X.ben, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Female)")+ggtitle("Prob X Fixed -CN: Rare Male, RD = 0.2")+
+#   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
+# rare.male.sex.ben.X.cm
+
+rare.male.sex.ben.X.s <- ggplot(male.sex.result, aes(y=prob.X.ben, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Female)")+ggtitle("Prob X Fixed: Rare Male, RD = 0.2")+
-  labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.male.sex.ben.X
+  xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Female)")+ggtitle("Prob X Fixed: Rare Male, RD = 0.2")
+rare.male.sex.ben.X.s
 
 
+#Looking at Y chromosome 
+# rare.male.sex.freq.Y.cm <- ggplot(male.sex.result, aes(y=Y, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Y Mean Frequency ")+labs("Number of Common Sex (Female)")+ggtitle("'Y' Frequency -cm: Rare Male, RD = 0.2")
+# rare.male.sex.freq.Y.cm
 
-
-#Looking at Y chromosome first
-rare.male.sex.freq.Y <- ggplot(male.sex.result, aes(y=Y, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+rare.male.sex.freq.Y.s <- ggplot(male.sex.result, aes(y=Y, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("Y Mean Frequency ")+labs("Number of Common Sex (Female)")+ggtitle("'Y' Frequency: Rare Male, RD = 0.2")+
-  labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.male.sex.freq.Y
+  xlab("Operational Sex Ratio")+ylab("Y Mean Frequency ")+labs("Number of Common Sex (Female)")+ggtitle("'Y' Frequency: Rare Male, RD = 0.2")
+rare.male.sex.freq.Y.s
 
-rare.male.sex.ben.Y <- ggplot(male.sex.result, aes(y=prob.Y.ben, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+# rare.male.sex.ben.Y.cm <- ggplot(male.sex.result, aes(y=prob.Y.ben, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Female)")+ggtitle("Prob Y Fixed -cm: Rare Male, RD = 0.2")
+# rare.male.sex.ben.Y.cm
+
+rare.male.sex.ben.Y.s <- ggplot(male.sex.result, aes(y=prob.Y.ben, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Female)")+ggtitle("Prob Y Fixed: Rare Male, RD = 0.2")+
-  labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.male.sex.ben.Y
-
+  xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Female)")+ggtitle("Prob Y Fixed: Rare Male, RD = 0.2")
+rare.male.sex.ben.Y.s
 
 
 
 #Fitness difference
-rare.male.sex.fit <- ggplot(fitness.male.Sex, aes(y=Fit.Diff, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
-  scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
-  theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("Fitness Difference")+labs("Number of Common Sex (Female)")+ggtitle("'Sex' Fitness: Rare Male, RD = 0.2")+
-  labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.male.sex.fit
+# rare.male.sex.fit.cm <- ggplot(fitness.male.Sex, aes(y=Fit.Diff, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Fitness Difference")+labs("Number of Common Sex (Female)")+ggtitle("'Sex' Fitness -cm: Rare Male, RD = 0.2")+
+#   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
+# rare.male.sex.fit.cm
 
+rare.male.sex.fit.s <- ggplot(fitness.male.Sex, aes(y=Fit.Diff, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
+  scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
+  theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+  xlab("Operational Sex Ratio")+ylab("Fitness Difference")+labs("Number of Common Sex (Female)")+ggtitle("'Sex' Fitness: Rare Male, RD = 0.2")
+rare.male.sex.fit.s
 
 
 
@@ -377,50 +455,87 @@ for(i in 1:4){#pop
 FAfitness <- fm.aut.result[fm.aut.result$h != 99,]
 
 #checking that the degree of fitness change is appropriate and follows a similar line for both species
-sort.mfit <- FAfitness[order(FAfitness$Male.Fit, FAfitness$Female.Fit),]
+sort.ffit <- FAfitness[order(FAfitness$Male.Fit, FAfitness$Female.Fit),]
 sp <- seq(from=.01, to=.99, length.out=252)
-plot(1/sort.mfit$Female.Fit~sp, col = "red", ylab = "Fitness Impact")
-points(sort.mfit$Male.Fit/1~sp, col="blue")
+plot(1/sort.ffit$Female.Fit~sp, col = "red", ylab = "Fitness Impact")
+points(sort.ffit$Male.Fit/1~sp, col="blue")
 
 
 
 fm.aut.result$common.num<-as.factor(fm.aut.result$common.num)
+fm.aut.result$s<-as.factor(fm.aut.result$s)
+fm.aut.result$h<-as.factor(fm.aut.result$h)
+
 FAfitness$common.num<-as.factor(FAfitness$common.num)
+FAfitness$s<-as.factor(FAfitness$s)
+FAfitness$h<-as.factor(FAfitness$h)
+
+
 
 str(FAfitness)
 
 
 #Only common.num as factor
-rare.female.aut.freq <- ggplot(fm.aut.result, aes(y=A, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+# rare.female.aut.freq.cm <- ggplot(fm.aut.result, aes(y=A, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Mean Frequency of A")+labs("Number of Common Sex (Male)")+ggtitle("'A' Frequency: Rare Female, RD = 0.5")+
+#   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
+# rare.female.aut.freq.cm
+
+rare.female.aut.freq.s <- ggplot(fm.aut.result, aes(y=A, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("Mean Frequency of A")+labs("Number of Common Sex (Male)")+ggtitle("'A' Frequency: Rare Female, RD = 0.5")+
-  labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.female.aut.freq
+  xlab("Operational Sex Ratio")+ylab("Mean Frequency of A")+labs("Number of Common Sex (Male)")+ggtitle("'A' Frequency: Rare Female, RD = 0.5")
+rare.female.aut.freq.s
 
-rare.female.aut.ben <- ggplot(fm.aut.result, aes(y=prob.ben, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+# rare.female.aut.ben.cm <- ggplot(fm.aut.result, aes(y=prob.ben, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Male)")+ggtitle("Prob A Fixed: Rare Female, RD = 0.5")+
+#   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
+# rare.female.aut.ben.cm
+
+
+rare.female.aut.ben.s <- ggplot(fm.aut.result, aes(y=prob.ben, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Male)")+ggtitle("Prob A Fixed: Rare Female, RD = 0.5")+
-  labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.female.aut.ben
+  xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Male)")+ggtitle("Prob A Fixed: Rare Female, RD = 0.5")
+rare.female.aut.ben.s
 
 
-rare.female.aut.fit <- ggplot(FAfitness, aes(y=Fit.Diff, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+# rare.female.aut.fit.cm <- ggplot(FAfitness, aes(y=Fit.Diff, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Fitness Difference")+labs("Number of Common Sex (Male)")+ggtitle("'A' Fitness: Rare Female, RD = 0.5")+
+#   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
+# rare.female.aut.fit.cm
+
+
+rare.female.aut.fit.s <- ggplot(FAfitness, aes(y=Fit.Diff, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Fitness Difference")+labs("Number of Common Sex (Male)")+ggtitle("'A' Fitness: Rare Female, RD = 0.5")+
   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.female.aut.fit
+rare.female.aut.fit.s
 
 
 
@@ -499,70 +614,146 @@ points(sort.mfit$Male.Fit/1~sp, col="blue")
 
 
 fm.sex.result$common.num<-as.factor(fm.sex.result$common.num)
+fm.sex.result$s <- as.factor(fm.sex.result$s)
+fm.sex.result$h <- as.factor(fm.sex.result$h)
+
 fitness.female.Sex$common.num<-as.factor(fitness.female.Sex$common.num)
+fitness.female.Sex$s<-as.factor(fitness.female.Sex$s)
+fitness.female.Sex$h<-as.factor(fitness.female.Sex$h)
 
 str(fitness.female.Sex)
 
 
-#Looking at X chromosome first
-rare.female.sex.freq.X <- ggplot(fm.sex.result, aes(y=X, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
-  scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
-  theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("X Mean Frequency")+labs("Number of Common Sex (Male)")+ggtitle("'X' Frequency: Rare Female, RD = 0.2")+
-  labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.female.sex.freq.X
+#Looking at X chromosome 
+# rare.female.sex.freq.X.cm <- ggplot(fm.sex.result, aes(y=X, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("X Mean Frequency")+labs("Number of Common Sex (Male)")+ggtitle("'X' Frequency: Rare Female, RD = 0.2")
+# rare.female.sex.freq.X.cm
 
-rare.female.sex.ben.X <- ggplot(fm.sex.result, aes(y=prob.X.ben, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+rare.female.sex.freq.X.s <- ggplot(fm.sex.result, aes(y=X, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
+  theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+  xlab("Operational Sex Ratio")+ylab("X Mean Frequency")+labs("Number of Common Sex (Male)")+ggtitle("'X' Frequency: Rare Female, RD = 0.2")
+rare.female.sex.freq.X.s
+
+# rare.female.sex.ben.X.cm <- ggplot(fm.sex.result, aes(y=prob.X.ben, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Male)")+ggtitle("Prob X Fixed: Rare Female, RD = 0.2")+
+#   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
+# rare.female.sex.ben.X.cm
+
+rare.female.sex.ben.X.s <- ggplot(fm.sex.result, aes(y=prob.X.ben, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
+  scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Male)")+ggtitle("Prob X Fixed: Rare Female, RD = 0.2")+
   labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.female.sex.ben.X
+rare.female.sex.ben.X.s
 
 
+#Looking at Y chromosome 
+# rare.female.sex.freq.Y.cm <- ggplot(fm.sex.result, aes(y=Y, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Y Mean Frequency ")+labs("Number of Common Sex (Male)")+ggtitle("'Y' Frequency: Rare Female, RD = 0.2")
+# rare.female.sex.freq.Y.cm
 
-
-#Looking at Y chromosome first
-rare.female.sex.freq.Y <- ggplot(fm.sex.result, aes(y=Y, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+rare.female.sex.freq.Y.s <- ggplot(fm.sex.result, aes(y=Y, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("Y Mean Frequency ")+labs("Number of Common Sex (Male)")+ggtitle("'Y' Frequency: Rare Female, RD = 0.2")+
-  labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.female.sex.freq.Y
+  xlab("Operational Sex Ratio")+ylab("Y Mean Frequency ")+labs("Number of Common Sex (Male)")+ggtitle("'Y' Frequency: Rare Female, RD = 0.2")
+rare.female.sex.freq.Y.s
 
-rare.female.sex.ben.Y <- ggplot(fm.sex.result, aes(y=prob.Y.ben, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+# rare.female.sex.ben.Y.cm <- ggplot(fm.sex.result, aes(y=prob.Y.ben, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ylim(c(0,1)) + 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Male)")+ggtitle("Prob Y Fixed: Rare Female, RD = 0.2")
+# rare.female.sex.ben.Y.cm
+
+rare.female.sex.ben.Y.s <- ggplot(fm.sex.result, aes(y=prob.Y.ben, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Male)")+ggtitle("Prob Y Fixed: Rare Female, RD = 0.2")+
-  labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.female.sex.ben.Y
-
+  xlab("Operational Sex Ratio")+ylab("Prob. Fixed")+labs("Number of Common Sex (Male)")+ggtitle("Prob Y Fixed: Rare Female, RD = 0.2")
+rare.female.sex.ben.Y.s
 
 
 
 #Fitness difference
-rare.female.sex.fit <- ggplot(fitness.female.Sex, aes(y=Fit.Diff, x=OSR))+ 
-  geom_line(aes(colour=common.num), linewidth=1)+ 
-  geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
-  scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-  facet_grid(h~s, labeller=label_both)+theme_bw()+ 
-  theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("Fitness Difference")+labs("Number of Common Sex (Female)")+ggtitle("'Sex' Fitness: Rare Female, RD = 0.2")+
-  labs(colour="Number of the\n common sex", shape="Number of the\n common sex", fill="Number of the\n common sex")
-rare.female.sex.fit
+# rare.female.sex.fit.cm <- ggplot(fitness.female.Sex, aes(y=Fit.Diff, x=OSR))+ 
+#   geom_line(aes(colour=common.num), linewidth=1)+ 
+#   geom_point(aes(shape=common.num, fill=common.num),stat="identity", position="identity", size=3)+ 
+#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+#   facet_grid(h~s, labeller=label_both)+theme_bw()+ 
+#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+#   xlab("Operational Sex Ratio")+ylab("Fitness Difference")+labs("Number of Common Sex (Female)")+ggtitle("'Sex' Fitness: Rare Female, RD = 0.2")
+# rare.female.sex.fit.cm
 
+
+rare.female.sex.fit.s <- ggplot(fitness.female.Sex, aes(y=Fit.Diff, x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
+  scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+  facet_grid(h~common.num, labeller=label_both)+theme_bw()+ 
+  theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+  xlab("Operational Sex Ratio")+ylab("Fitness Difference")+labs("Number of Common Sex (Female)")+ggtitle("'Sex' Fitness: Rare Female, RD = 0.2")
+rare.female.sex.fit.s
+
+
+
+#### Graphs ####
+
+#Fitness
+
+rare.female.sex.fit.s
+rare.male.sex.fit.s
+rare.female.aut.fit.s
+rare.male.aut.fit.s
+
+
+#Autosome
+rare.male.aut.freq.s
+rare.male.aut.ben.s
+
+rare.female.aut.freq.s
+rare.female.aut.ben.s
+
+
+#Sex Chromosome
+rare.male.sex.freq.X.s
+rare.male.sex.ben.X.s
+rare.male.sex.freq.Y.s
+rare.male.sex.ben.Y.s
+
+
+rare.female.sex.freq.X.s
+rare.female.sex.ben.X.s
+rare.female.sex.freq.Y.s
+rare.female.sex.ben.Y.s
 
 
 
