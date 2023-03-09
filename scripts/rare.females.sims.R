@@ -16,7 +16,7 @@ bias <- c(1, .8,.6, .4, .2, .1, .05)
 rd <- c(.2, .5)
 
 # dominance factor of allele 1
-# allele 1 is fit for males
+# allele 1 is fit for males - how do i have it set up compared to this?
 # allele 2 is fit for females
 h <- c(0, .5, 1, 99) # 99 indicates to run SSD model
 

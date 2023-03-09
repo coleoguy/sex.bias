@@ -102,9 +102,8 @@ fitness <- male.aut.result[male.aut.result$h != 99,]
 #checking that the degree of fitness change is appropriate and follows a similar line for both species
 sort.mfit <- fitness[order(fitness$Male.Fit, fitness$Female.Fit),]
 sp <- seq(from=.01, to=.99, length.out=252)
-plot(1/sort.mfit$Female.Fit~sp, col = "red", ylab = "Fitness Impact") + points(sort.mfit$Male.Fit/1~sp, col="blue")
-
-
+plot(1/sort.mfit$Female.Fit~sp, col = "red", ylab = "Fitness Impact", ylim = c(1:2)) 
+points(sort.mfit$Male.Fit/1~sp, col="blue")
 
 male.aut.result$common.num<-as.factor(male.aut.result$common.num)
 male.aut.result$h <- as.factor(male.aut.result$h)
@@ -117,10 +116,6 @@ fitness$h<-as.factor(fitness$h)
 
 str(male.aut.result)
 str(fitness)
-
-male.aut.result$h <- as.factor(male.aut.result$h)
-male.aut.result$s <- as.factor(male.aut.result$s)
-
 
 #Only common.num as factor
 # rare.male.aut.freq.cm <- ggplot(male.aut.result, aes(y=A, x=OSR))+ 
@@ -248,12 +243,12 @@ fitness.male.Sex <- male.sex.result[male.sex.result$h != 99,]
 #checking that the degree of fitness change is appropriate and follows a similar line for both species
 #fitness is very skewed this time!
 sort.sex.mfit <- fitness.male.Sex[order(fitness.male.Sex$Male.Fit, fitness.male.Sex$Female.Fit),]
-sort.sex.mfit <- fitness.male.Sex[order(fitness.male.Sex$Female.Fit, fitness.male.Sex$Male.Fit),]
+#sort.sex.mfit <- fitness.male.Sex[order(fitness.male.Sex$Female.Fit, fitness.male.Sex$Male.Fit),]
 sp <- seq(from=.01, to=.99, length.out=252)
 plot(1/sort.sex.mfit$Female.Fit~sp, col = "red", ylab = "Fitness Impact", ylim = c(1,2))
 points(sort.sex.mfit$Male.Fit/1~sp, col="blue")
 
-
+#Very different from the autosome!
 
 male.sex.result$common.num<-as.factor(male.sex.result$common.num)
 male.sex.result$s<-as.factor(male.sex.result$s)
@@ -415,8 +410,7 @@ for(i in 1:4){#pop
       for(l in 1:3){#s
         
         #Grab a subset of the data in which we want to average
-        temp.cur<-faut[faut$females ==pop[i],] #population number of common sex 
-        ####GO BACK AND fix females -> males
+        temp.cur<-faut[faut$males ==pop[i],] #population number of common sex 
         temp.cur<-temp.cur[temp.cur$OSR ==osr[j],] #OSR
         temp.cur<-temp.cur[temp.cur$h == h[k],] #dominance factor
         temp.cur<-temp.cur[temp.cur$s == s[l],] #selection pressure
@@ -457,7 +451,7 @@ FAfitness <- fm.aut.result[fm.aut.result$h != 99,]
 #checking that the degree of fitness change is appropriate and follows a similar line for both species
 sort.ffit <- FAfitness[order(FAfitness$Male.Fit, FAfitness$Female.Fit),]
 sp <- seq(from=.01, to=.99, length.out=252)
-plot(1/sort.ffit$Female.Fit~sp, col = "red", ylab = "Fitness Impact")
+plot(1/sort.ffit$Female.Fit~sp, col = "red", ylab = "Fitness Impact", ylim = c(1:2))
 points(sort.ffit$Male.Fit/1~sp, col="blue")
 
 
@@ -540,7 +534,7 @@ rare.female.aut.fit.s
 
 
 
-#### Feale Sex Chr ####
+#### Female Sex Chr ####
 
 " Sex chr"
 
@@ -562,7 +556,7 @@ for(i in 1:4){#pop
       for(l in 1:3){#s
         
         #Grab a subset of the data in which we want to average
-        temp.cur<-sex[sex$females ==pop[i],] #population number of common sex
+        temp.cur<-fsex[fsex$males ==pop[i],] #population number of common sex
         temp.cur<-temp.cur[temp.cur$OSR ==osr[j],] #OSR
         temp.cur<-temp.cur[temp.cur$h == h[k],] #dominance factor
         temp.cur<-temp.cur[temp.cur$s == s[l],] #selection pressure
@@ -605,11 +599,13 @@ fitness.female.Sex <- fm.sex.result[fm.sex.result$h != 99,]
 
 #checking that the degree of fitness change is appropriate and follows a similar line for both species
 #fitness is very skewed this time!
-sort.mfit <- fitness.female.Sex[order(fitness.female.Sex$Male.Fit, fitness.female.Sex$Female.Fit),]
-sort.mfit <- fitness.female.Sex[order(fitness.female.Sex$Female.Fit, fitness.female.Sex$Male.Fit),]
+sort.f.sex.fit <- fitness.female.Sex[order(fitness.female.Sex$Male.Fit, fitness.female.Sex$Female.Fit),]
+#sort.f.sex.fit <- fitness.female.Sex[order(fitness.female.Sex$Female.Fit, fitness.female.Sex$Male.Fit),]
 sp <- seq(from=.01, to=.99, length.out=252)
-plot(1/sort.mfit$Female.Fit~sp, col = "red", ylab = "Fitness Impact")
-points(sort.mfit$Male.Fit/1~sp, col="blue")
+plot(1/sort.f.sex.fit$Female.Fit~sp, col = "red", ylab = "Fitness Impact", ylim = c(1,2))
+points(sort.f.sex.fit$Male.Fit/1~sp, col="blue")
+
+
 
 
 
@@ -727,14 +723,6 @@ rare.female.sex.fit.s
 
 #### Graphs ####
 
-#Fitness
-
-rare.female.sex.fit.s
-rare.male.sex.fit.s
-rare.female.aut.fit.s
-rare.male.aut.fit.s
-
-
 #Autosome
 rare.male.aut.freq.s
 rare.male.aut.ben.s
@@ -749,12 +737,32 @@ rare.male.sex.ben.X.s
 rare.male.sex.freq.Y.s
 rare.male.sex.ben.Y.s
 
-
 rare.female.sex.freq.X.s
 rare.female.sex.ben.X.s
 rare.female.sex.freq.Y.s
 rare.female.sex.ben.Y.s
 
 
+#Fitness difference
+rare.female.sex.fit.s
+rare.male.sex.fit.s
+rare.female.aut.fit.s
+rare.male.aut.fit.s
+
+
+#Fitness check
+sp <- seq(from=.01, to=.99, length.out=252)
+
+plot(1/sort.mfit$Female.Fit~sp, col = "red", ylab = "Fitness Impact", ylim = c(1:2), main="Rare Male - Auto fitness") 
+points(sort.mfit$Male.Fit/1~sp, col="blue")
+
+plot(1/sort.sex.mfit$Female.Fit~sp, col = "red", ylab = "Fitness Impact", ylim = c(1,2), main="Rare Male - Sex fitness")
+points(sort.sex.mfit$Male.Fit/1~sp, col="blue")
+
+plot(1/sort.ffit$Female.Fit~sp, col = "red", ylab = "Fitness Impact", ylim = c(1:2), main="Rare Female - Auto fitness")
+points(sort.ffit$Male.Fit/1~sp, col="blue")
+
+plot(1/sort.f.sex.fit$Female.Fit~sp, col = "red", ylab = "Fitness Impact", ylim = c(1,2), main="Rare Female - Auto fitness")
+points(sort.f.sex.fit$Male.Fit/1~sp, col="blue")
 
 
