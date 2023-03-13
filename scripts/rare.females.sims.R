@@ -51,7 +51,7 @@ registerDoParallel(cl)
 # this sets up the structure of the results
 results <- as.data.frame(matrix(NA,0,9))
 colnames(results) <- c("X","Y","A","males","OSR", "rd","h","s", "gens")
-
+i <- ii <- j <- k <-m <- 1
 # this runs the rare male conditions for our sim project
 # i cycles through pop sizes
 # ii cycles through levels of bias

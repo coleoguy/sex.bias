@@ -32,13 +32,60 @@ osr <- c(1,.8,.6,.4,.2,.1,.05) #operation sex ratio
 
 
 
-"Rare Male analysis, Common Female"
+"Rare Male analysis, Common Female, allele 2 is beneficial for common sex"
 
-dat<-read.csv("rare.male.250.iter.csv", as.is=T, header = TRUE)
+mdat<-read.csv("rare.male.250.iter.csv", as.is=T, header = TRUE)
+simple.mdat <- aggregate(x = mdat,
+                         by = list(mdat$females, mdat$OSR, mdat$rd, mdat$h, mdat$s),
+                         FUN = mean)[,-c(1:5)]
+
+getFits <- function(x){
+  x <- as.numeric(x)
+  # autosome
+  if(x[6] == 0.5){
+    # male benefit allele frequency
+    p <- x[3]
+    q <- 1 - p
+    # todo add fitness to below
+    malfit <- p^2 + 2*p*q + q^2
+    femfit <- p^2 + 2*p*q + q^2
+  }
+  # sex chromosome
+  if(x[6] != 0.5){
+    # males
+    p2 <- (1-x[1]) * x[2]
+    q2 <- x[1] * (1-x[2])
+    # todo add fitness to below
+    malfit <- p2 + (x[1] * x[2] +  (1-x[1]) * (1-x[2])) + q2
+    
+    
+    # females
+    p <- x[1]
+    q <- 1 - p
+    # todo add fitness to below
+    femfit <- p^2 + 2*p*q + q^2
+  }
+  fits <- c(malfit, femfit)
+  names(fits) <- c("male","female")
+  return(fits)
+  
+}
+
+
+
+simple.mdat$malW <- simple.mdat$femW <- NA
+for(i in 1:nrow(simple.mdat)){
+  fits <- getFits(simple.mdat[i,])
+  simple.mdat$malW <- fits[1]
+  simple.mdat$femW <- fits[2]
+}
+
+
+
 #separate by sex-linked or autosome
 
-aut<-dat[dat$rd == 0.5,] #Autosome
-sex<-dat[dat$rd == 0.2,] #Sex-linked
+maut<-mdat[mdat$rd == 0.5,] #Autosome
+msex<-mdat[mdat$rd == 0.2,] #Sex-linked
 
 
 
@@ -47,13 +94,15 @@ sex<-dat[dat$rd == 0.2,] #Sex-linked
 "Autosome first"
 
 # setup mean results
-male.aut.result <- as.data.frame(matrix(NA,0,13))
-colnames(male.aut.result) <- c("common.num", "OSR","h","s","gens","A","X","Y", "prob.ben","prob.del", "Male.Fit", "Female.Fit", "Fit.Diff")
+male.aut.result <- as.data.frame(matrix(NA,0,14))
+colnames(male.aut.result) <- c("Female N", "OSR","Male N", "h","s","gens","A","X","Y", "ben.fixed","ben.rm", "Male.Fit", "Female.Fit", "Fit.Diff")
 
 #Because it is autosomal - only using A frequency to calculate male and female fitness
 
 #Can I convert this into a autosome function
 #And create a sex chr function
+
+"Allele frequencies of the allele benefitting the common sex"
 
 row.num <- 1
 for(i in 1:4){#pop
@@ -62,7 +111,7 @@ for(i in 1:4){#pop
       for(l in 1:3){#s
         
         #Grab a subset of the data in which we want to average
-        temp.cur<-aut[aut$females ==pop[i],] #population number of common sex
+        temp.cur<-maut[maut$females ==pop[i],] #population number of common sex
         temp.cur<-temp.cur[temp.cur$OSR ==osr[j],] #OSR
         temp.cur<-temp.cur[temp.cur$h == h[k],] #dominance factor
         temp.cur<-temp.cur[temp.cur$s == s[l],] #selection pressure
@@ -70,24 +119,26 @@ for(i in 1:4){#pop
         #Subset information
         male.aut.result[row.num, 1]<-pop[i] #Population of common sex into col 1
         male.aut.result[row.num, 2]<-osr[j] #OSR into col 2
-        male.aut.result[row.num, 3]<-h[k] #Dominance factor into col 3
-        male.aut.result[row.num, 4]<-s[l] #Selection pressure into col 4
+        male.aut.result[row.num, 3]<-pop[i]*osr[j] # Population of rare sex (male)
+        male.aut.result[row.num, 4]<-h[k] #Dominance factor into col 4
+        male.aut.result[row.num, 5]<-s[l] #Selection pressure into col 5
         
         #Averages
-        male.aut.result[row.num, 5]<-mean(temp.cur$gens) #Average number of generations over the simulations
-        male.aut.result[row.num, 6]<- a <-mean(temp.cur$A) #Average freq over simulations
-        male.aut.result[row.num, 7]<- x <-mean(temp.cur$X) #Average freq over simulations
-        male.aut.result[row.num, 8]<- y <-mean(temp.cur$Y) #Average freq over simulations
+        male.aut.result[row.num, 6]<-mean(temp.cur$gens) #Average number of generations over the simulations
+        male.aut.result[row.num, 7]<- a <- 1- mean(temp.cur$A) #Average freq of allele 2 over simulations
+        male.aut.result[row.num, 8]<- x <-mean(temp.cur$X) #Average freq of allele 2 over simulations
+        male.aut.result[row.num, 9]<- y <- 1- mean(temp.cur$Y) #Average freq of allele 1 over simulations
         
-        male.aut.result[row.num, 9]<-sum(temp.cur$A == 1)/length(temp.cur$A) #prob beneficial/fixed
-        male.aut.result[row.num, 10]<-sum(temp.cur$A == 0)/length(temp.cur$A) #prob deleterious/removed
+        male.aut.result[row.num, 10]<-sum(temp.cur$A == 0)/length(temp.cur$A) #prob allele 2 fixed
+        male.aut.result[row.num, 11]<-sum(temp.cur$A == 1)/length(temp.cur$A) #prob allele 1 fixed
         
 
         #things are going to be janky for anything for h = 99, will exclude in later steps when looking at fitness
         #Since rd = 0.5, looking only at fitness using the autosome frequency
-        male.aut.result[row.num,11] <- ((a^2) * 1) + ((2*a*(1-a)) * (1+h[k]*s[l])) + ((1-a)^2 * (1+s[l])) #Male fitness, 1.9 is max
-        male.aut.result[row.num,12] <- ((a^2) * 1) + ((2*a*(1-a)) * (1/(1+h[k]*s[l]))) + ((1-a)^2 * (1/(1+s[l]))) #Female fitness, 1 is max
-        male.aut.result[row.num,13] <- ((male.aut.result[row.num,11]/(1+male.aut.result[row.num,4])) - (male.aut.result[row.num,12]))
+        
+        male.aut.result[row.num,12] <- ((a^2) * 1) + ((2*a*(1-a)) * (1+h[k]*s[l])) + ((1-a)^2 * (1+s[l])) #Male fitness, 1.9 is max
+        male.aut.result[row.num,13] <- ((a^2) * 1) + ((2*a*(1-a)) * (1/(1+h[k]*s[l]))) + ((1-a)^2 * (1/(1+s[l]))) #Female fitness, 1 is max
+        male.aut.result[row.num,14] <- ((male.aut.result[row.num,12]/(1+male.aut.result[row.num,5])) - (male.aut.result[row.num,13]))
         
         row.num<-row.num + 1
       }

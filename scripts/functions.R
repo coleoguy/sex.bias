@@ -2,9 +2,9 @@
 # and sexual antagonism
 
 rd = .2
-males = 1000
-females = 1000*.1
-h = 1
+males = 50
+females = 50
+h = 0
 s = .9
 
 
@@ -19,11 +19,11 @@ Generation <- function(pop, females, males, rd, h, s){
 
 measureFit <- function(h, s){
   if(h!=99){
-    hmal <- h
-    hfem <- 1-h
-    fit <- c(1,   1+hfem*s,   1+hfem*s,   1+s,
-             1+s, 1+hmal*s,   1+hmal*s,   1)
-    fitreturn(fit)
+    #hmal <- h
+    #hfem <- 1-h
+    fit <- c(1/(1+s),   1/(1+h*s),   1/(1+h*s), 1,
+             (1+s)/(1+s), (1+h*s)/(1+s),   (1+h*s)/(1+s),   1/(1+s)) #divided males by (1+s) to put it on a 0-1 scale like females 
+    return(fit)
   }
   if(h==99){
     fit <- c(1, 1+s, 1+s, 1+s,
@@ -55,12 +55,15 @@ GetParentsGeno <- function(pop, fit, females, males){
   mom.geno[2] <- sum(mom.genomes==2)
   mom.geno[3] <- sum(mom.genomes==3)
   mom.geno[4] <- sum(mom.genomes==4)
+  mom.geno
+  
   dad.geno <- rep(0, 4)
   names(dad.geno) <- c("X1Y1", "X1Y2", "X2Y1", "X2Y2")
   dad.geno[1] <- sum(dad.genomes==5)
   dad.geno[2] <- sum(dad.genomes==6)
   dad.geno[3] <- sum(dad.genomes==7)
   dad.geno[4] <- sum(dad.genomes==8)
+  dad.geno
   
   parents <- list(mom.geno, dad.geno)
   names(parents) <- c("moms", "dads")
@@ -119,17 +122,17 @@ GetFreq <- function(pop, chrom, allele, males, females){
   ones <- twos <- 0
   if(chrom == "Y"){
     if(allele == 1) ones <- (pop[5] + pop[7]) / males
-    if(allele == 2) twos <- (pop[6] + pop[8]) / males
+    if(allele == 2) twos <- (pop[6] + pop[8]) / males #Only males in calc bc only males can have Y and 1 in each male
   }
   if(chrom == "A"){
     ones <- (pop[1]*2 + pop[2] + pop[3] +
-             pop[5]*2 + pop[6] + pop[7]) / (2 * sum(pop))
+             pop[5]*2 + pop[6] + pop[7]) / (2 * sum(pop)) # *2 because 2 gametes per indiv
     twos <- 1 - ones
   }
   if(chrom == "X"){
     if(allele == 1){
       ones <- (pop[1] * 2 + pop[2] + pop[3] + pop[5] + pop[6]) /
-        (males + females * 2)
+        (males + females * 2) # mult by 2 because 2 gametes per indiv, both males and females can have 
     }
     if(allele == 2){
       twos <- (pop[4] * 2 + pop[2] + pop[3] + pop[7] + pop[8]) /
