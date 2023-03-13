@@ -184,6 +184,8 @@ test <- fm.aut.result[fm.aut.result$s==0.9,]
 test <- test[test$h==0,] 
 vioplot(test$OSR ~ test$common.num, col = 2:5)
 
+vioplot(as.factor(fm.aut.result$common.num) ~as.factor(fm.aut.result$OSR))
+
 
 
 #### Male Sex Chr ####
