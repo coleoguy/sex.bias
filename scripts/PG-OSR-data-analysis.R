@@ -19,6 +19,7 @@ library(grid)
 library(ggpubr)
 library(ggplot2)
 library(viridis)
+library(vioplot)
 
 
 #set values
@@ -175,6 +176,14 @@ rare.male.aut.fit.s <- ggplot(fitness, aes(y=Fit.Diff, x=OSR))+
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Fitness Difference")+labs("Number of Common Sex (Female)")+ggtitle("'A' Fitness: Rare Male, RD = 0.5")
 rare.male.aut.fit.s
+
+
+#Violin plot
+
+test <- fm.aut.result[fm.aut.result$s==0.9,] 
+test <- test[test$h==0,] 
+vioplot(test$OSR ~ test$common.num, col = 2:5)
+
 
 
 #### Male Sex Chr ####
@@ -762,7 +771,7 @@ points(sort.sex.mfit$Male.Fit/1~sp, col="blue")
 plot(1/sort.ffit$Female.Fit~sp, col = "red", ylab = "Fitness Impact", ylim = c(1:2), main="Rare Female - Auto fitness")
 points(sort.ffit$Male.Fit/1~sp, col="blue")
 
-plot(1/sort.f.sex.fit$Female.Fit~sp, col = "red", ylab = "Fitness Impact", ylim = c(1,2), main="Rare Female - Auto fitness")
+plot(1/sort.f.sex.fit$Female.Fit~sp, col = "red", ylab = "Fitness Impact", ylim = c(1,2), main="Rare Female - Sex fitness")
 points(sort.f.sex.fit$Male.Fit/1~sp, col="blue")
 
 
