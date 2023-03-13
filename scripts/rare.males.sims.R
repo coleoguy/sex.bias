@@ -82,11 +82,15 @@ for(i in 1:length(females)){
             resultY <- resultX <- resultA <- c()
             # this will be true unless an allele has fixed as the SAL
             segregating <- T
+            
             # this is just a counter
-            c.ite <- 1
+            c.ite <- 0 #must be set to 1 out here
             # this while loop will run till something fixes or
-            # until we reach 2000 generations
+            # until we reach 1000 generations
+            
             while(segregating){
+              # this increments our counter
+              c.ite <- c.ite + 1
               #print(p)
               # this gets the allele frequencies we are interested in
               resultA[c.ite] <- GetFreq(pop, chrom="A", allele = 1,
@@ -98,6 +102,7 @@ for(i in 1:length(females)){
               # this runs a generation of the simulation
               pop <- Generation(pop, males=males, females=females[i],
                                 rd=rd[j], h=h[k], s=s[m])
+              
               # this checks to see if something is fixed in the pop
               if(resultY[c.ite] %in% c(1,0) & resultX[c.ite] %in% c(1,0)){
                 segregating <- F
@@ -106,14 +111,12 @@ for(i in 1:length(females)){
                 Y <- resultY[c.ite]
               }
               # this checks to see if we have run gens generations
-              if(c.ite > gens){
+              if(c.ite == gens){
                 segregating <- F
                 A <- resultA[c.ite]
                 X <- resultX[c.ite]
                 Y <- resultY[c.ite]
               }
-              # this increments our counter
-              c.ite <- c.ite + 1
             }
             # this puts the final result of our sim together
             c(X, Y, A, c.ite)
@@ -135,9 +138,9 @@ for(i in 1:length(females)){
     }
   }
 }
-write.csv(results, file="rare.male.250.iter,csv")
+write.csv(results, file="rare.male.250.iter.csv", row.names = FALSE)
 
-##
+stopCluster(cl)
 ##
 
 #rm(list=ls()[-19])

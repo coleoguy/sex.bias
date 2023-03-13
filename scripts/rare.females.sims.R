@@ -16,7 +16,7 @@ bias <- c(1, .8,.6, .4, .2, .1, .05)
 rd <- c(.2, .5)
 
 # dominance factor of allele 1
-# allele 1 is fit for males
+# allele 1 is fit for males - how do i have it set up compared to this?
 # allele 2 is fit for females
 h <- c(0, .5, 1, 99) # 99 indicates to run SSD model
 
@@ -87,11 +87,12 @@ for(i in 1:length(males)){
             resultY <- resultX <- resultA <- c()
             # this will be true unless an allele has fixed as the SAL
             segregating <- T
+            
             # this is just a counter
-            c.ite <- 1
-            # this while loop will run till something fixes or
-            # until we reach 2000 generations
+            c.ite <- 0 
+            
             while(segregating){
+              c.ite <- c.ite + 1 
               #print(p)
               # this gets the allele frequencies we are interested in
               resultA[c.ite] <- GetFreq(pop, chrom="A", allele = 1,
@@ -111,14 +112,13 @@ for(i in 1:length(males)){
                 Y <- resultY[c.ite]
               }
               # this checks to see if we have run gens generations
-              if(c.ite > gens){
+              if(c.ite == gens){
                 segregating <- F
                 A <- resultA[c.ite]
                 X <- resultX[c.ite]
                 Y <- resultY[c.ite]
               }
-              # this increments our counter
-              c.ite <- c.ite + 1
+
             }
             # this puts the final result of our sim together
             c(X, Y, A, c.ite)
@@ -140,10 +140,10 @@ for(i in 1:length(males)){
     }
   }
 }
-write.csv(results, file="rare.female.250.iter.csv")
+write.csv(results, file="rare.female.250.iter.csv", row.names=FALSE)
 
 
-##
+stopCluster(cl)
 ##
 
 #rm(list=ls()[-19])

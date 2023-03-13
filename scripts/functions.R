@@ -1,6 +1,13 @@
 # simulating populations with sex bias
 # and sexual antagonism
 
+rd = .2
+males = 1000
+females = 1000*.1
+h = 1
+s = .9
+
+
 Generation <- function(pop, females, males, rd, h, s){
   fit <- measureFit(h, s)
   parents <- GetParentsGeno(pop, fit, females, males)
@@ -16,12 +23,12 @@ measureFit <- function(h, s){
     hfem <- 1-h
     fit <- c(1,   1+hfem*s,   1+hfem*s,   1+s,
              1+s, 1+hmal*s,   1+hmal*s,   1)
-    return(fit)
+    fitreturn(fit)
   }
   if(h==99){
     fit <- c(1, 1+s, 1+s, 1+s,
              1+s, 1+s, 1+s, 1)
-    return(fit)
+    return(fit)                                                                                                                        
   }
 }
 
@@ -91,12 +98,14 @@ makeSperm <- function(dad.geno, rd){
 }
 
 makeNewPop <- function(pop, eggs, sperm, females, males){
+  #make new females
   x  <-  paste(sample(1:2, size = females, replace=T, prob = eggs),
                sample(1:2, size = females, replace=T, prob = sperm[1:2]))
   pop[1] <- sum(x == "1 1")
   pop[2] <- sum(x == "1 2")
   pop[3] <- sum(x == "2 1")
   pop[4] <- sum(x == "2 2")
+  #make new males
   x <- paste(sample(1:2, size = males, replace=T, prob = eggs),
              sample(1:2, size = males, replace=T, prob = sperm[3:4]))
   pop[5] <- sum(x == "1 1")
