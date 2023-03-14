@@ -2,7 +2,7 @@
 # coleoguy@gmail.com
 
 # first we load our functions
-source("functions.R")
+source("../scripts/functions.R")
 
 # here we set up all the variables that we will explore in our
 # simulations below
@@ -96,11 +96,11 @@ for(i in 1:length(males)){
               #print(p)
               # this gets the allele frequencies we are interested in
               resultA[c.ite] <- GetFreq(pop, chrom="A", allele = 1,
-                                    females=females, males=males[i])
+                                    females=females, males=males[i]) #freq of allele 1 on autosomes (ben. male)
               resultY[c.ite] <- GetFreq(pop, chrom="Y", allele = 1,
-                                    females=females, males=males[i])
+                                    females=females, males=males[i]) #freq of allele 1 on Y chr (ben. male)
               resultX[c.ite] <- GetFreq(pop, chrom="X", allele = 2,
-                                    females=females, males=males[i])
+                                    females=females, males=males[i]) #freq of allele 2 on X chr (ben. female)
               # this runs a generation of the simulation
               pop <- Generation(pop, females=females, males=males[i],
                                 rd=rd[j], h=h[k], s=s[m])

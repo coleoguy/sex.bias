@@ -156,3 +156,67 @@ makeGenomes <- function(females, males, freqs=NULL){
 }
 
 
+getFits <- function(x){
+  x <- as.numeric(x)
+  # autosome
+  if(x[6] == 0.5){
+    # male benefit allele frequency
+    p <- x[3] #p is allele 1, 1 is beneficial for males
+    q <- 1 - p #q is allele 2, 2 is beneficial for females
+    # todo add fitness to below
+    malfit <- ((p^2 * (1+x[8]))  + (2*p*q * (1+x[7]*x[8])) + (q^2 * 1))/(1+x[8]) #dividing at the end by 1+s to put it between 0 and 1
+    femfit <- (p^2 * (1/(1+x[8]))) + (2*p*q * (1/(1+x[7]*x[8]))) + (q^2 * 1) #already on 0-1 scale
+    fitdiff <- malfit - femfit #Male vs female
+  }
+  # sex chromosome
+  if(x[6] != 0.5){
+    # males
+    p2 <- (1-x[1]) * x[2] #p is allele 1, ben for males #x chr table data is for female ben. allele, subtract from 1 for male ben. allele freq
+    q2 <- x[1] * (1-x[2]) #q is allele 2, ben for feamles
+    # todo add fitness to below
+    
+    malfit <- ((p2 * (1+x[8])) + ((x[1] * x[2] +  (1-x[1]) * (1-x[2])) * (1 + x[7]*x[8])) + (q2 * 1))/(1+x[8]) #dividing at the end by 1+s to put it between 0 and 1
+    
+    # females
+    p <- x[1] #p is allele 2, beneficial for females #x chr table data is for female ben. allele
+    q <- 1 - p #q is allele 1, ben for males
+    # todo add fitness to below
+    
+    femfit <- (p^2 * 1) + (2*p*q * (1/(1+x[7]*x[8]))) + (q^2 * (1/(1+x[8])))
+    fitdiff <- malfit - femfit #Male vs female
+  }
+  fits <- c(malfit, femfit, fitdiff)
+  names(fits) <- c("male","female", "fitdiff")
+  return(fits)
+  
+}
+
+
+getProb <- function(x, y){
+  #Taking each row/simulation that matches the scenario to extract how many 1s (fixed) and 0s (deleted) were for each scenario
+  
+  #y[,4] is equivalent to the commonsex column, labeled as males or females in input files
+  temp <- y[y[,4] == x[i,4] & y$OSR == x[i,5] & y$rd == x[i,6] & y$h == x[i,7] & y$s == x[i,8],]
+  
+  #X chr fixation (allele 2 fixation, benefits female)
+  Xfix <- sum(temp$X == 1)/length(temp$X)
+  Xdel <- sum(temp$X == 0)/length(temp$X)
+
+  #Y chromosome fixation (allele 1 fixation, benefits males)
+  Yfit <- sum(temp$Y == 1)/length(temp$Y)
+  Ydel <- sum(temp$Y == 0)/length(temp$Y)
+
+  #Autosome fixation (allele 1 fixation, benefits male)
+  Afit <- sum(temp$A == 1)/length(temp$A)
+  Adel <- sum(temp$A == 0)/length(temp$A)
+
+  fixes <- c(Xfix, Xdel, Yfit, Ydel, Afit, Adel)
+  names(fixes) <- c("Xfix","Xdel","Yfix","Ydel","Afix","Adel")
+  return(fixes)
+}
+
+
+
+
+
+
