@@ -599,6 +599,7 @@ rare.female.aut.fix
 #Sex Chromosome freq and fix 
 rare.male.sex.freq.X
 rare.male.sex.fix.X
+
 rare.male.sex.freq.Y
 rare.male.sex.fix.Y
 
