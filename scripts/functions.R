@@ -1,11 +1,15 @@
 # simulating populations with sex bias
 # and sexual antagonism
 
-rd = .2
-males = 50
-females = 50
+rd = .5
+males = 1000
+females = 1000
 h = 0
 s = .9
+
+pop <- makeGenomes(males, females,
+                   freqs = c(rep(males/4, 4),
+                             rep(females/4, 4)))
 
 
 Generation <- function(pop, females, males, rd, h, s){
@@ -164,9 +168,10 @@ getFits <- function(x){
     p <- x[3] #p is allele 1, 1 is beneficial for males
     q <- 1 - p #q is allele 2, 2 is beneficial for females
     # todo add fitness to below
-    malfit <- ((p^2 * (1+x[8]))  + (2*p*q * (1+x[7]*x[8])) + (q^2 * 1))/(1+x[8]) #dividing at the end by 1+s to put it between 0 and 1
+    malfit <- ((p^2 * (1+x[8]))  + (2*p*q * (1+x[7]*x[8])) + (q^2 * 1)) #/(1+x[8]) #dividing at the end by 1+s to put it between 0 and 1
+    
     femfit <- (p^2 * (1/(1+x[8]))) + (2*p*q * (1/(1+x[7]*x[8]))) + (q^2 * 1) #already on 0-1 scale
-    fitdiff <- malfit - femfit #Male vs female
+    fitdiff <- malfit/(1+x[8]) - femfit #Male vs female
   }
   # sex chromosome
   if(x[6] != 0.5){
@@ -175,7 +180,7 @@ getFits <- function(x){
     q2 <- x[1] * (1-x[2]) #q is allele 2, ben for feamles
     # todo add fitness to below
     
-    malfit <- ((p2 * (1+x[8])) + ((x[1] * x[2] +  (1-x[1]) * (1-x[2])) * (1 + x[7]*x[8])) + (q2 * 1))/(1+x[8]) #dividing at the end by 1+s to put it between 0 and 1
+    malfit <- ((p2 * (1+x[8])) + ((x[1] * x[2] +  (1-x[1]) * (1-x[2])) * (1 + x[7]*x[8])) + (q2 * 1)) /(1+x[8]) #dividing at the end by 1+s to put it between 0 and 1
     
     # females
     p <- x[1] #p is allele 2, beneficial for females #x chr table data is for female ben. allele

@@ -3,7 +3,7 @@
 # Updated 3-14-2023
 
 
-
+setwd("~/GitHub/sex.bias/results")
 #Load libraries
 library(gridExtra)
 library(grid)
@@ -68,14 +68,14 @@ str(simple.maut)
 #Looking at rare male so Y-axis needs to be from the female/common sex"
 
 #Autosome set for allele 1, ben male. 1-A gives freq of allele 2, ben female (common sex)
-rare.male.aut.freq <- ggplot(simple.maut, aes(y=(1-A), x=OSR))+ 
+rare.male.aut.mean <- ggplot(simple.maut, aes(y=(1-A), x=OSR))+ 
   geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
   geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~females, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("Female - A ben Frequency")+labs("dominance")+ggtitle("'A' Frequency: Rare Male, RD = 0.5")
-rare.male.aut.freq
+  xlab("Operational Sex Ratio")+ylab("Female - A ben Frequency")+labs("dominance")+ggtitle("'A' Mean: Rare Male, RD = 0.5")
+rare.male.aut.mean
 
 
 # Fixed at 1 was for allele 1, beneficial for male. Need allele beneficial for female. If allele 1 was deleted, then allele 2 fixed. 
@@ -90,7 +90,6 @@ rare.male.aut.fix <- ggplot(simple.maut, aes(y=(delA), x=OSR))+
 rare.male.aut.fix
 
 
-
 #### Violin Plot
 
 
@@ -102,29 +101,36 @@ maut$h <- as.factor(maut$h)
 maut$s <- as.factor(maut$s)
 maut$OSR<-as.factor(maut$OSR)
 
-
-#freq of common sex (female) beneficial allele, allele 2. 
-#A set up as allele 1, ben male so 1-A - allele 2
-# rare.male.aut.freq.v.all <- ggplot(maut, aes(y=(1-A), x=OSR))+ 
-#   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
-#   facet_grid(h~females, labeller=label_both)+theme_bw()+ 
-#   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-#   xlab("Operational Sex Ratio")+ylab("Female - A ben Frequency")+labs("dominance")+ggtitle("'A' Frequency: Rare Male, RD = 0.5")+
-#   geom_violin(aes(fill = factor(s)))
-# rare.male.aut.freq.v.all
-
 rare.male.aut.freq.v.s <- ggplot(maut, aes(y=(1-A), x=OSR))+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~females, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Female - A ben Frequency")+labs("dominance")+ggtitle("'A' Frequency: Rare Male, RD = 0.5")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.male.aut.freq.v.s
 
 ###same as female plots just flipped - can create as necessary the selection comparison plots
 
+maut.9 <- maut[maut$s == 0.9,]
+maut.1 <- maut[maut$s == 0.1,]
 
+# s = 0.9
+rare.male.aut.freq.v.s9 <- ggplot(maut.9, aes(y=(X), x=OSR))+ 
+  scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+  facet_grid(h~females, labeller=label_both)+theme_bw()+ 
+  theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+  xlab("Operational Sex Ratio")+ylab("Female - X ben Frequency")+labs("dominance")+ggtitle("'A' Frequency: Rare Male, RD = 0.2, s = 0.9")+
+  geom_violin(aes(fill=OSR))
+rare.male.aut.freq.v.s9
 
+# s = 0.1
+rare.male.aut.freq.v.s1 <- ggplot(maut.1, aes(y=(X), x=OSR))+ 
+  scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+  facet_grid(h~females, labeller=label_both)+theme_bw()+ 
+  theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+  xlab("Operational Sex Ratio")+ylab("Female - X ben Frequency")+labs("dominance")+ggtitle("'A' Frequency: Rare Male, RD = 0.2, s = 0.1")+
+  geom_violin(aes(fill=OSR))
+rare.male.aut.freq.v.s1
 
 
 #### Fitness
@@ -159,7 +165,7 @@ rare.male.aut.fit <- ggplot(mfit.aut, aes(y=-(Wdiff), x=OSR))+
 rare.male.aut.fit
 
 
-mfit.aut$OSR<-as.factor(mfit.aut$OSR)
+Smfit.aut$OSR<-as.factor(mfit.aut$OSR)
 rare.male.aut.fit.c <- ggplot(mfit.aut, aes(y= femW, x=malW))+ylim(0.5,1)+xlim(0.5,1)+
   geom_line(aes(colour=s), linewidth=1)+ 
   geom_point(aes(shape=OSR, fill=OSR),stat="identity", position="identity", size=3)+ 
@@ -185,14 +191,14 @@ str(simple.msex)
 #Looking at X chromosome 
 
 # X was based off allele 2, beneficial for female, so no need to adjust
-rare.male.sex.freq.X <- ggplot(simple.msex, aes(y=X, x=OSR))+ 
+rare.male.sex.mean.X <- ggplot(simple.msex, aes(y=X, x=OSR))+ 
   geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
   geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~females, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Female - X ben Frequency")+labs("Number of Common Sex (Female)")+ggtitle("'X' Frequency: Rare Male, RD = 0.2")
-rare.male.sex.freq.X
+rare.male.sex.mean.X
 
 rare.male.sex.fix.X <- ggplot(simple.msex, aes(y=fixX, x=OSR))+ 
   geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
@@ -210,14 +216,14 @@ rare.male.sex.fix.X
 #ben female Y gene only detrimental to male
 
 " Work on these graphs, the Y-axis isn't making sense "
-rare.male.sex.freq.Y <- ggplot(simple.msex, aes(y=(1-Y), x=OSR))+ 
+rare.male.sex.mean.Y <- ggplot(simple.msex, aes(y=(1-Y), x=OSR))+ 
   geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
   geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~females, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Female - Y ben Frequency")+labs("Number of Common Sex (Female)")+ggtitle("'Y' Frequency: Rare Male, RD = 0.2")
-rare.male.sex.freq.Y
+rare.male.sex.mean.Y
 
 #Y set up for fixation for males ben allele 1, female is common sex so need prob that male Y doesn't fix
 rare.male.sex.fix.Y <- ggplot(simple.msex, aes(y=delY, x=OSR))+ 
@@ -251,7 +257,7 @@ rare.male.X.freq.v.s <- ggplot(msex, aes(y=(X), x=OSR))+
   facet_grid(h~females, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Female - X ben Frequency")+labs("dominance")+ggtitle("'X' Frequency: Rare Male, RD = 0.2")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.male.X.freq.v.s
 
 # s = 0.9
@@ -260,7 +266,7 @@ rare.male.X.freq.v.s9 <- ggplot(msex.9, aes(y=(X), x=OSR))+
   facet_grid(h~females, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Female - X ben Frequency")+labs("dominance")+ggtitle("'X' Frequency: Rare Male, RD = 0.2, s = 0.9")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.male.X.freq.v.s9
 
 # s = 0.9
@@ -269,7 +275,7 @@ rare.male.X.freq.v.s1 <- ggplot(msex.1, aes(y=(X), x=OSR))+
   facet_grid(h~females, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Female - X ben Frequency")+labs("dominance")+ggtitle("'X' Frequency: Rare Male, RD = 0.2, s = 0.1")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.male.X.freq.v.s1
 
 #### Y
@@ -282,7 +288,7 @@ rare.male.Y.freq.v.s <- ggplot(msex, aes(y=(1-Y), x=OSR))+
   facet_grid(h~females, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Female - Y ben Frequency")+labs("dominance")+ggtitle("'Y' Frequency: Rare Male, RD = 0.2")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.male.Y.freq.v.s
 
 # s = 0.9
@@ -291,16 +297,16 @@ rare.male.Y.freq.v.s9 <- ggplot(msex.9, aes(y=(1-Y), x=OSR))+
   facet_grid(h~females, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Female - Y ben Frequency")+labs("dominance")+ggtitle("'Y' Frequency: Rare Male, RD = 0.2, s = 0.9")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.male.Y.freq.v.s9
 
-# s = 0.9
+# s = 0.1
 rare.male.Y.freq.v.s1 <- ggplot(msex.1, aes(y=(1-Y), x=OSR))+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~females, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Female - Y ben Frequency")+labs("dominance")+ggtitle("'Y' Frequency: Rare Male, RD = 0.2, s = 0.1")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.male.Y.freq.v.s1
 
 
@@ -345,6 +351,30 @@ rare.male.sex.fit.c <- ggplot(mfit.sex, aes(y= femW, x=malW))+ylim(0.5,1)+xlim(0
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Male Fitness (rare sex)")+ylab("Female Fitness (common sex)")+ggtitle("Fitness comparison: Rare Male, RD = 0.2")
 rare.male.sex.fit.c
+
+
+
+#### Rare Male Generations ####
+
+#What was the average generation time point?
+#If generation is 1000, then it never fixed in the simulation
+rare.male.aut.gen <- ggplot(simple.maut, aes(y=(gens), x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1000)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
+  scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+  facet_grid(h~females, labeller=label_both)+theme_bw()+ 
+  theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+  xlab("Operational Sex Ratio")+ylab("Generations till Autosome Chr fixture")+labs("dominance")+ggtitle("Generations: Rare Male, RD = 0.5")
+rare.male.aut.gen
+
+rare.male.sex.gen <- ggplot(simple.msex, aes(y=(gens), x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1000)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
+  scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+  facet_grid(h~females, labeller=label_both)+theme_bw()+ 
+  theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+  xlab("Operational Sex Ratio")+ylab("Generations till Sexual Chr fixture")+labs("dominance")+ggtitle("Generations: Rare Male, RD = 0.2")
+rare.male.sex.gen
 
 
 
@@ -399,14 +429,14 @@ str(simple.faut)
 #Common male so Y-axis uses male beneficial allele
 
 #autosome used allele 1, male ben, so no change necessary
-rare.female.aut.freq <- ggplot(simple.faut, aes(y=A, x=OSR))+ 
+rare.female.aut.mean <- ggplot(simple.faut, aes(y=A, x=OSR))+ 
   geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
   geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~males, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
-  xlab("Operational Sex Ratio")+ylab("Male ben A freq")+labs("Number of Common Sex (Male)")+ggtitle("'A' Frequency: Rare Female, RD = 0.5")
-rare.female.aut.freq
+  xlab("Operational Sex Ratio")+ylab("Male ben A freq")+labs("Number of Common Sex (Male)")+ggtitle("'A' Mean: Rare Female, RD = 0.5")
+rare.female.aut.mean
 
 #autosome used allele 1, male ben, so no change necessary
 rare.female.aut.fix <- ggplot(simple.faut, aes(y=fixA, x=OSR))+ 
@@ -450,7 +480,7 @@ rare.female.aut.freq.v.s <- ggplot(faut, aes(y=(A), x=OSR))+
   facet_grid(h~males, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Male - A ben Frequency")+labs("dominance")+ggtitle("'A' Frequency: Rare Female, RD = 0.5")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.female.aut.freq.v.s
 
 
@@ -460,7 +490,7 @@ rare.female.aut.freq.v.s9 <- ggplot(faut.9, aes(y=(1-X), x=OSR))+
   facet_grid(h~males, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Male - A ben Frequency")+labs("dominance")+ggtitle("'A' Frequency: Rare Female, RD = 0.2, s = 0.9")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.female.aut.freq.v.s9
 
 # s = 0.1
@@ -469,7 +499,7 @@ rare.female.aut.freq.v.s1 <- ggplot(faut.1, aes(y=(1-X), x=OSR))+
   facet_grid(h~males, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Male - A ben Frequency")+labs("dominance")+ggtitle("'A' Frequency: Rare Female, RD = 0.2, s = 0.1")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.female.aut.freq.v.s1
 
 
@@ -527,14 +557,14 @@ str(simple.fsex)
 
 #X chr freq set using allele 2, ben for females, adjust to look at allele 1 freq, ben males
 #Looking at X chromosome 
-rare.female.sex.freq.X <- ggplot(simple.fsex, aes(y=(1-X), x=OSR))+ 
+rare.female.sex.mean.X <- ggplot(simple.fsex, aes(y=(1-X), x=OSR))+ 
   geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
   geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~males, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Male ben X Mean Frequency")+labs("Number of Common Sex (Male)")+ggtitle("'X' Frequency: Rare Female, RD = 0.2")
-rare.female.sex.freq.X
+rare.female.sex.mean.X
 
 #Prob that ben X allele for males fixed. Code gave prob of female ben X fixing, prob of female X being deleted is prob of male ben X fixing
 rare.female.sex.fix.X <- ggplot(simple.fsex, aes(y=delX, x=OSR))+ 
@@ -549,14 +579,14 @@ rare.female.sex.fix.X
 
 #Looking at Y chromosome
 #Y chr set up to look at allele 1, ben males, so no change needed
-rare.female.sex.freq.Y <- ggplot(simple.fsex, aes(y=Y, x=OSR))+ 
+rare.female.sex.mean.Y <- ggplot(simple.fsex, aes(y=Y, x=OSR))+ 
   geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
   geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
   facet_grid(h~males, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("ben male Y Mean Frequency ")+labs("Number of Common Sex (Male)")+ggtitle("'Y' Frequency: Rare Female, RD = 0.2")
-rare.female.sex.freq.Y
+rare.female.sex.mean.Y
 
 rare.female.sex.fix.Y <- ggplot(simple.fsex, aes(y=fixY, x=OSR))+ 
   geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
@@ -594,7 +624,7 @@ rare.female.X.freq.v.s <- ggplot(fsex, aes(y=(1-X), x=OSR))+
   facet_grid(h~males, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Male - X ben Frequency")+labs("dominance")+ggtitle("'X' Frequency: Rare Female, RD = 0.2")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.female.X.freq.v.s
 
 # s = 0.9
@@ -603,7 +633,7 @@ rare.female.X.freq.v.s9 <- ggplot(fsex.9, aes(y=(1-X), x=OSR))+
   facet_grid(h~males, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Male - X ben Frequency")+labs("dominance")+ggtitle("'X' Frequency: Rare Female, RD = 0.2, s = 0.9")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.female.X.freq.v.s9
 
 # s = 0.1
@@ -612,7 +642,7 @@ rare.female.X.freq.v.s1 <- ggplot(fsex.1, aes(y=(1-X), x=OSR))+
   facet_grid(h~males, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Male - X ben Frequency")+labs("dominance")+ggtitle("'X' Frequency: Rare Female, RD = 0.2, s = 0.1")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.female.X.freq.v.s1
 
 
@@ -625,7 +655,7 @@ rare.female.Y.freq.v.s <- ggplot(fsex, aes(y=(Y), x=OSR))+
   facet_grid(h~males, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Male - Y ben Frequency")+labs("dominance")+ggtitle("'Y' Frequency: Rare Female, RD = 0.2")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.female.Y.freq.v.s
 
 # s = 0.9
@@ -634,7 +664,7 @@ rare.female.Y.freq.v.s9 <- ggplot(fsex.9, aes(y=(Y), x=OSR))+
   facet_grid(h~males, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Male - Y ben Frequency")+labs("dominance")+ggtitle("'Y' Frequency: Rare Female, RD = 0.2, s = 0.9")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.female.Y.freq.v.s9
 
 # s = 0.1
@@ -643,7 +673,7 @@ rare.female.Y.freq.v.s1 <- ggplot(fsex.1, aes(y=(Y), x=OSR))+
   facet_grid(h~males, labeller=label_both)+theme_bw()+ 
   theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
   xlab("Operational Sex Ratio")+ylab("Male - Y ben Frequency")+labs("dominance")+ggtitle("'Y' Frequency: Rare Female, RD = 0.2, s = 0.1")+
-  geom_violin(aes(fill=factor(OSR)))
+  geom_violin(aes(fill=OSR))
 rare.female.Y.freq.v.s1
 
 
@@ -690,21 +720,49 @@ rare.female.sex.fit.c
 
 
 
+#### Rare Female Generations ####
+
+#What was the average generation time point?
+#If generation is 1000, then it never fixed in the simulation
+rare.female.aut.gen <- ggplot(simple.faut, aes(y=(gens), x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1000)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
+  scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+  facet_grid(h~males, labeller=label_both)+theme_bw()+ 
+  theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+  xlab("Operational Sex Ratio")+ylab("Generations till Autosome Chr fixture")+labs("dominance")+ggtitle("Generations: Rare Female, RD = 0.5")
+rare.female.aut.gen
+
+rare.female.sex.gen <- ggplot(simple.fsex, aes(y=(gens), x=OSR))+ 
+  geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1000)) + 
+  geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
+  scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
+  facet_grid(h~males, labeller=label_both)+theme_bw()+ 
+  theme(text= element_text(family="sans", face="plain", color="#000000", size=13, hjust=0.5, vjust=0.5))+
+  xlab("Operational Sex Ratio")+ylab("Generations till Sexual Chr fixture")+labs("dominance")+ggtitle("Generations: Rare Female, RD = 0.2")
+rare.female.sex.gen
+
+
+
 
 #### Graph Summary ####
+
+pdf(file ='../figures/PG2023/OSR_graphs2.pdf')
 
 ### Autosome 
 
   #Autosome Mean/fixation
 #Frequency of beneficial allele graphs are mostly the same, just flipped on h=0 or 1
-#rare.male.aut.freq
-rare.female.aut.freq
+#rare.male.aut.mean
+rare.female.aut.mean
 #rare.male.aut.fix
 rare.female.aut.fix
 
   #Violin
   #Autosomes are flipped but very similar
 #rare.male.aut.freq.v.s
+#rare.male.aut.freq.v.s1
+#rare.male.aut.freq.v.s9
 rare.female.aut.freq.v.s
 rare.female.aut.freq.v.s1
 rare.female.aut.freq.v.s9
@@ -720,18 +778,19 @@ rare.female.aut.fit.c
 
 
 #Sex Chromosome
+  #Sex Chromosome Mean/Fixation
 
-  #Sex Chromosome Mean/Fixation 
-rare.male.sex.freq.X
+
+rare.male.sex.mean.X
 rare.male.sex.fix.X
 
-rare.male.sex.freq.Y
+rare.male.sex.mean.Y
 rare.male.sex.fix.Y
 
-rare.female.sex.freq.X
+rare.female.sex.mean.X
 rare.female.sex.fix.X
 
-rare.female.sex.freq.Y
+rare.female.sex.mean.Y
 rare.female.sex.fix.Y
 
 
@@ -753,7 +812,6 @@ rare.female.Y.freq.v.s1
 rare.female.Y.freq.v.s9
 
 
-
   #Fitness difference
 rare.female.sex.fit
 rare.male.sex.fit
@@ -762,26 +820,138 @@ rare.female.sex.fit.c
 rare.male.sex.fit.c
 
 
+#Generations
+#Dependent on common/rare sex, swap h0 and h1
+#Takes longer to fix if common sex allele is dominant
+
+rare.female.sex.gen
+rare.male.sex.gen
+
+#Sex chromosome takes longer to fix than the autosomes
+rare.female.aut.gen
+rare.male.aut.gen
+
+
+dev.off()
+
+#subset of graphs
+pdf(file ='../figures/PG2023/OSR_graphs_subset.pdf')
+
+rare.female.aut.freq.v.s1
+rare.female.aut.freq.v.s9
+rare.female.aut.mean
+rare.female.aut.fix
+
+rare.female.aut.fit
+rare.female.aut.fit.c
+
+rare.female.X.freq.v.s1
+rare.female.X.freq.v.s9
+rare.female.sex.mean.X
+rare.female.sex.fix.X
+
+rare.male.X.freq.v.s1
+rare.male.X.freq.v.s9
+rare.male.sex.mean.X
+rare.male.sex.fix.X
+
+rare.female.Y.freq.v.s1
+rare.female.Y.freq.v.s9
+rare.female.sex.mean.Y
+rare.female.sex.fix.Y
+
+rare.male.Y.freq.v.s1
+rare.male.Y.freq.v.s9
+rare.male.sex.mean.Y
+rare.male.sex.fix.Y
+
+rare.female.sex.fit
+rare.female.sex.fit.c
+
+rare.female.aut.gen
+rare.female.sex.gen
+rare.male.sex.gen
+
+dev.off()
+
+
+pdf(file ='../figures/PG2023/OSR_graphs_autosome2.pdf')
+
+rare.female.aut.freq.v.s1
+rare.female.aut.freq.v.s9
+rare.female.aut.mean
+rare.female.aut.fix
+
+rare.male.aut.freq.v.s1
+rare.male.aut.freq.v.s9
+rare.male.aut.mean
+rare.male.aut.fix
+
+rare.female.aut.fit
+rare.female.aut.fit.c
+
+rare.female.aut.gen
+rare.male.aut.gen
+
+dev.off()
+
+pdf(file ='../figures/PG2023/OSR_graphs_X.pdf')
+
+rare.female.X.freq.v.s1
+rare.female.X.freq.v.s9
+rare.female.sex.mean.X
+rare.female.sex.fix.X
+
+rare.male.X.freq.v.s1
+rare.male.X.freq.v.s9
+rare.male.sex.mean.X
+rare.male.sex.fix.X
+
+rare.female.sex.fit
+rare.female.sex.fit.c
+
+rare.female.sex.gen
+rare.male.sex.gen
+
+dev.off()
+
+
+pdf(file ='../figures/PG2023/OSR_graphs_Y.pdf')
+
+rare.female.Y.freq.v.s1
+rare.female.Y.freq.v.s9
+rare.female.sex.mean.Y
+rare.female.sex.fix.Y
+
+rare.male.Y.freq.v.s1
+rare.male.Y.freq.v.s9
+rare.male.sex.mean.Y
+rare.male.sex.fix.Y
+
+rare.female.sex.fit
+rare.female.sex.fit.c
+
+rare.female.sex.gen
+rare.male.sex.gen
+
+dev.off()
 
 
 
 
-
-
-
-#Fitness check
-sp <- seq(from=.01, to=.99, length.out=252)
-
-plot(sort.mfit$femW~sp, col = "red", ylab = "Fitness Impact", ylim = c(0:1), main="Rare Male - Auto fitness") 
-points(sort.mfit$malW~sp, col="blue")
-
-plot(sort.ffit$femW~sp, col = "red", ylab = "Fitness Impact", ylim = c(0:1), main="Rare Female - Auto fitness")
-points(sort.ffit$malW~sp, col="blue")
-
-plot(sort.sex.mfit$femW~sp, col = "red", ylab = "Fitness Impact", ylim = c(0:1), main="Rare Male - Sex fitness")
-points(sort.sex.mfit$malW~sp, col="blue")
-
-plot(sort.f.sex.fit$femW~sp, col = "red", ylab = "Fitness Impact", ylim = c(0:1), main="Rare Female - Sex fitness")
-points(sort.f.sex.fit$malW~sp, col="blue")
-
-
+# #Fitness check
+# sp <- seq(from=.01, to=.99, length.out=252)
+# 
+# plot(sort.mfit$femW~sp, col = "red", ylab = "Fitness Impact", ylim = c(0:1), main="Rare Male - Auto fitness") 
+# points(sort.mfit$malW~sp, col="blue")
+# 
+# plot(sort.ffit$femW~sp, col = "red", ylab = "Fitness Impact", ylim = c(0:1), main="Rare Female - Auto fitness")
+# points(sort.ffit$malW~sp, col="blue")
+# 
+# plot(sort.sex.mfit$femW~sp, col = "red", ylab = "Fitness Impact", ylim = c(0:1), main="Rare Male - Sex fitness")
+# points(sort.sex.mfit$malW~sp, col="blue")
+# 
+# plot(sort.f.sex.fit$femW~sp, col = "red", ylab = "Fitness Impact", ylim = c(0:1), main="Rare Female - Sex fitness")
+# points(sort.f.sex.fit$malW~sp, col="blue")
+# 
+# 
