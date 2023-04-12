@@ -32,6 +32,14 @@ for(i in 1:nrow(simple.mdat)){
 }
 
 
+test <-simple.mdat[simple.mdat$rd == 0.5,]
+test <-test[test$females == 1000,]
+test <-test[test$OSR == 1.0,,]
+test <-test[test$h == 0.5,]
+
+
+
+
 #Sex chromosome
 
 simple.msex<-simple.mdat[simple.mdat$rd == 0.2,] #Sex-linked
@@ -165,17 +173,23 @@ SexFitnessComp <- ggdraw() + draw_plot(SexFitnessComp) +
   draw_label("Common Female", x = 0.03, y = 0.30, angle = 90, size =10)
 SexFitnessComp
 
-AutFitnessComp <- ggplot(AutFit, aes(x = OSR))+
+AutFit_h <- AutFit[AutFit$h == 0.5,]
+
+AutFitnessComp <- ggplot(AutFit_h, aes(x = OSR))+
   facet_grid(h~common)+
-  geom_line(aes(y=M_Wdiff, colour =s))+
+  geom_line(aes(y=M_Wdiff, colour =s,))+
   geom_point(aes(y=M_Wdiff, shape = s, colour = s))+
   geom_point(aes(y=F_Wdiff, shape = s, colour = s))+
   geom_line(aes(y=F_Wdiff, colour = s))+
   scale_y_continuous(limits = c(-0.6,0.6), breaks = my_ticks, labels=my_labels,expand = c(0,0))+
   theme(axis.line.y = element_blank(), plot.margin = unit(c(1,1,1,1), "lines"))+
   ylab(expression("Fitness difference (common - rare)\n"))+
-  ggtitle("Fitness, rd = 0.5, h = 0.5")
+  ggtitle("Fitness, rd = 0.5, h = 0.5") 
 AutFitnessComp <- ggdraw() + draw_plot(AutFitnessComp) +
   draw_label("Common Male", x = 0.03, y = 0.65, angle = 90, size =10) +
   draw_label("Common Female", x = 0.03, y = 0.30, angle = 90, size =10)
 AutFitnessComp
+
+
+
+
