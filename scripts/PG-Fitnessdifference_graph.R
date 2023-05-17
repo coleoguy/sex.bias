@@ -1,5 +1,5 @@
 
-setwd("~/GitHub/sex.bias/results")
+setwd("C:/Users/pdglenn/OneDrive/Github/sex.bias/results")
 #Load libraries
 library(gridExtra)
 library(grid)
@@ -174,10 +174,10 @@ SexFitnessComp <- ggdraw() + draw_plot(SexFitnessComp) +
 SexFitnessComp
 
 
-test4 <-SexFit_h[SexFit_h$rd == 0.2,]
-test4 <-test4[test4$common == 1000,]
-test4 <-test4[test4$OSR == 1.0,,]
-test4 <-test4[test4$h == 0.5,]
+# test4 <-SexFit_h[SexFit_h$rd == 0.2,]
+# test4 <-test4[test4$common == 1000,]
+# test4 <-test4[test4$OSR == 1.0,,]
+# test4 <-test4[test4$h == 0.5,]
 
 AutFit_h <- AutFit[AutFit$h == 0.5,]
 
@@ -197,10 +197,10 @@ AutFitnessComp <- ggdraw() + draw_plot(AutFitnessComp) +
 AutFitnessComp
 
 
-test3 <-AutFit_h[AutFit_h$rd == 0.5,]
-test3 <-test3[test3$common == 1000,]
-test3 <-test3[test3$OSR == 1.0,,]
-test3 <-test3[test3$h == 0.5,]
+# test3 <-AutFit_h[AutFit_h$rd == 0.5,]
+# test3 <-test3[test3$common == 1000,]
+# test3 <-test3[test3$OSR == 1.0,,]
+# test3 <-test3[test3$h == 0.5,]
 
 
 
