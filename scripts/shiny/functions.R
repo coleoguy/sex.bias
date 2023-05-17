@@ -25,8 +25,8 @@ measureFit <- function(h, s){
   if(h!=99){
     #hmal <- h
     #hfem <- 1-h
-    fit <- c(1/(1+s),   1/(1+h*s),   1/(1+h*s), 1,
-             (1+s)/(1+s), (1+h*s)/(1+s),   (1+h*s)/(1+s),   1/(1+s)) #divided males by (1+s) to put it on a 0-1 scale like females 
+    fit <- c(1,   1+((1-h)*s),   1+((1-h)*s), (1+s),
+             (1+s), (1+h*s),   (1+h*s),   1)
     return(fit)
   }
   if(h==99){
@@ -167,9 +167,9 @@ getFits <- function(x){
     p <- x[3] #p is allele 1, 1 is beneficial for males
     q <- 1 - p #q is allele 2, 2 is beneficial for females
     # todo add fitness to below
-    malfit <- ((p^2 * (1+x[8]))  + (2*p*q * (1+x[7]*x[8])) + (q^2 * 1)) #/(1+x[8]) #dividing at the end by 1+s to put it between 0 and 1
+    malfit <- ((p^2 * (1+x[8]))  + (2*p*q * (1+x[7]*x[8])) + (q^2 * 1)) 
     
-    femfit <- (p^2 * (1)) + (2*p*q * (1+((1-x[7])*x[8]))) + (q^2 * (1+x[8])) #already on 0-1 scale
+    femfit <- (p^2 * (1)) + (2*p*q * (1+((1-x[7])*x[8]))) + (q^2 * (1+x[8]))
     fitdiff <- malfit - femfit #Male vs female
   }
   
@@ -180,7 +180,7 @@ getFits <- function(x){
     q2 <- x[1] * (1-x[2]) #q is allele 2, ben for feamles
     # todo add fitness to below
     
-    malfit <- ((p2 * (1+x[8])) + ((x[1] * x[2] +  (1-x[1]) * (1-x[2])) * (1 + x[7]*x[8])) + (q2 * 1)) # / (1+x[8])#dividing at the end by 1+s to put it between 0 and 1
+    malfit <- ((p2 * (1+x[8])) + ((x[1] * x[2] +  (1-x[1]) * (1-x[2])) * (1 + x[7]*x[8])) + (q2 * 1)) #
     
     # females # X X
     p <- x[1] #p is allele 2, beneficial for females #x chr table data is for female ben. allele

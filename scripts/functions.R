@@ -25,8 +25,8 @@ measureFit <- function(h, s){
   if(h!=99){
     #hmal <- h
     #hfem <- 1-h
-    fit <- c(1/(1+s),   1/(1+h*s),   1/(1+h*s), 1,
-             (1+s)/(1+s), (1+h*s)/(1+s),   (1+h*s)/(1+s),   1/(1+s)) #divided males by (1+s) to put it on a 0-1 scale like females 
+    fit <- c(1,   1+((1-h)*s),   1+((1-h)*s), (1+s),
+             (1+s), (1+h*s),   (1+h*s),   1)
     return(fit)
   }
   if(h==99){
@@ -159,38 +159,88 @@ makeGenomes <- function(females, males, freqs=NULL){
   return(population)
 }
 
+
+
 getFits <- function(x){
   x <- as.numeric(x)
+  rd <- x[6]
+  s <- x[8]
+  h <- x[7]
   # autosome
-  if(x[6] == 0.5){
+  if(rd == 0.5){
     # male benefit allele frequency
     p <- x[3] #p is allele 1, 1 is beneficial for males
     q <- 1 - p #q is allele 2, 2 is beneficial for females
     # todo add fitness to below
-    malfit <- ((p^2 * (1+x[8]))  + (2*p*q * (1+x[7]*x[8])) + (q^2 * 1)) #/(1+x[8]) #dividing at the end by 1+s to put it between 0 and 1
+    wMal <- ((p^2 * (1+s))  + (2*p*q * (1+(h*s))) + (q^2 * 1)) 
     
-    femfit <- (p^2 * (1)) + (2*p*q * (1+((1-x[7])*x[8]))) + (q^2 * (1+x[8])) #already on 0-1 scale
-    fitdiff <- malfit - femfit #Male vs female
+    wFem <- (p^2 * (1)) + (2*p*q * (1+((1-h)*s))) + (q^2 * (1+s))
+    fitdiff <- wMal - wFem #Male vs female
   }
-  
   # sex chromosome
-  if(x[6] != 0.5){
+  if(rd != 0.5){
     # males # X Y
     p2 <- (1-x[1]) * x[2] #p is allele 1, ben for males #x chr table data is for female ben. allele, subtract from 1 for male ben. allele freq
-    q2 <- x[1] * (1-x[2]) #q is allele 2, ben for feamles
+    q2 <- x[1] * (1-x[2]) #q is allele 2, ben for females
     # todo add fitness to below
     
-    malfit <- ((p2 * (1+x[8])) + ((x[1] * x[2] +  (1-x[1]) * (1-x[2])) * (1 + x[7]*x[8])) + (q2 * 1)) # / (1+x[8])#dividing at the end by 1+s to put it between 0 and 1
+    #s <- x[8]
+    #hmal <- 
+    wMal <- ((p2 * (1+s)) + ((x[1] * x[2] +  (1-x[1]) * (1-x[2])) * (1 + (h*s))) + (q2 * 1)) #
     
     # females # X X
     p <- x[1] #p is allele 2, beneficial for females #x chr table data is for female ben. allele
     q <- 1 - p #q is allele 1, ben for males
     # todo add fitness to below
     
-    femfit <- (p^2 * (1+x[8])) + (2*p*q * (1+((1-x[7])*x[8]))) + (q^2 * (1))
-    fitdiff <- malfit - femfit #Male vs female
+    wFem <- (p^2 * (1+s)) + (2*p*q * (1+((1-h)*s))) + (q^2 * (1))
+    fitdiff <- wMal - wFem #Male vs female
   }
-  fits <- c(malfit, femfit, fitdiff)
+  fits <- c(wMal, wFem, fitdiff)
+  names(fits) <- c("male","female", "fitdiff")
+  return(fits)
+  
+}
+
+getFits <- function(x){
+  x <- as.numeric(x)
+  rd <- x[6]
+  s <- x[8]
+  h <- x[7]
+  A <- x[3]
+  X <- x[1]
+  Y <- x[2]
+  # autosome
+  if(rd == 0.5){
+    # male benefit allele frequency
+    p <- A #p is allele 1, 1 is beneficial for males
+    q <- 1 - p #q is allele 2, 2 is beneficial for females
+    # todo add fitness to below
+    wMal <- ((p^2 * (1+s))  + (2*p*q * (1+(h*s))) + (q^2 * 1)) 
+    
+    wFem <- (p^2 * (1)) + (2*p*q * (1+((1-h)*s))) + (q^2 * (1+s))
+    fitdiff <- wMal - wFem #Male vs female
+  }
+  # sex chromosome
+  if(rd != 0.5){
+    # males # X Y
+    p2 <- (1-X) * Y #p is allele 1, ben for males #x chr table data is for female ben. allele, subtract from 1 for male ben. allele freq
+    q2 <- X * (1-Y) #q is allele 2, ben for females
+    # todo add fitness to below
+    
+    #s <- x[8]
+    #hmal <- 
+    wMal <- ((p2 * (1+s)) + ((X*Y +  (1-X)*(1-Y)) * (1 + (h*s))) + (q2 * 1)) #
+    
+    # females # X X
+    p <- X #p is allele 2, beneficial for females #x chr table data is for female ben. allele
+    q <- 1 - p #q is allele 1, ben for males
+    # todo add fitness to below
+    
+    wFem <- (p^2 * (1+s)) + (2*p*q * (1+((1-h)*s))) + (q^2 * 1)
+    fitdiff <- wMal - wFem #Male vs female
+  }
+  fits <- c(wMal, wFem, fitdiff)
   names(fits) <- c("male","female", "fitdiff")
   return(fits)
   
