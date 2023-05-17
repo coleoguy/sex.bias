@@ -158,7 +158,7 @@ my_ticks = c(-1.0,-0.75,-0.50,-0.25,0,0.25,0.5, 0.75,1.0)
 
 SexFit_h <- SexFit[SexFit$h == 0.5,]
 
-SexFitnessComp <- ggplot(SexFit, aes(x = OSR))+
+SexFitnessComp <- ggplot(SexFit_h, aes(x = OSR))+
   facet_grid(h~common)+
   geom_line(aes(y=M_Wdiff, colour =s))+
   geom_point(aes(y=M_Wdiff, shape = s, colour = s))+
@@ -174,14 +174,14 @@ SexFitnessComp <- ggdraw() + draw_plot(SexFitnessComp) +
 SexFitnessComp
 
 
-# test4 <-SexFit_h[SexFit_h$rd == 0.2,]
-# test4 <-test4[test4$common == 1000,]
-# test4 <-test4[test4$OSR == 1.0,,]
-# test4 <-test4[test4$h == 0.5,]
+test4 <-SexFit_h[SexFit_h$rd == 0.2,]
+test4 <-test4[test4$common == 1000,]
+test4 <-test4[test4$OSR == 1.0,,]
+test4 <-test4[test4$h == 0.5,]
 
 AutFit_h <- AutFit[AutFit$h == 0.5,]
 
-AutFitnessComp <- ggplot(AutFit, aes(x = OSR))+
+AutFitnessComp <- ggplot(AutFit_h, aes(x = OSR))+
   facet_grid(h~common)+
   geom_line(aes(y=M_Wdiff, colour =s,))+
   geom_point(aes(y=M_Wdiff, shape = s, colour = s))+
@@ -197,10 +197,10 @@ AutFitnessComp <- ggdraw() + draw_plot(AutFitnessComp) +
 AutFitnessComp
 
 
-# test3 <-AutFit_h[AutFit_h$rd == 0.5,]
-# test3 <-test3[test3$common == 1000,]
-# test3 <-test3[test3$OSR == 1.0,,]
-# test3 <-test3[test3$h == 0.5,]
+test3 <-AutFit_h[AutFit_h$rd == 0.5,]
+test3 <-test3[test3$common == 1000,]
+test3 <-test3[test3$OSR == 1.0,,]
+test3 <-test3[test3$h == 0.5,]
 
 
 
