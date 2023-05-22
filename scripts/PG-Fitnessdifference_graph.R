@@ -31,18 +31,17 @@ for(i in 1:nrow(simple.mdat)){
   
 }
 
+simple.mdat$delA <- simple.mdat$fixA <-simple.mdat$delY <-simple.mdat$fixY <- simple.mdat$delX <-simple.mdat$fixX <-  NA
 
-# test <-simple.mdat[simple.mdat$rd == 0.5,]
-# test <-test[test$females == 1000,]
-# test <-test[test$OSR == 1.0,,]
-# test <-test[test$h == 0.5,]
-# 
-# 
-# test2 <-simple.mdat[simple.mdat$rd == 0.2,]
-# test2 <-test2[test2$females == 1000,]
-# test2 <-test2[test2$OSR == 1.0,,]
-# test2 <-test2[test2$h == 0.5,]
-
+for(i in 1:nrow(simple.mdat)){
+  fixes <- getProb(simple.mdat, mdat)
+  simple.mdat[i,13] <- fixes[1]
+  simple.mdat[i,14] <- fixes[2]
+  simple.mdat[i,15] <- fixes[3]
+  simple.mdat[i,16] <- fixes[4]
+  simple.mdat[i,17] <- fixes[5]
+  simple.mdat[i,18] <- fixes[6]
+}
 
 
 #Sex chromosome
@@ -66,6 +65,8 @@ str(mfit.sex)
 
 #### Female 
 
+#rare female, common male
+
 fdat<-read.csv("rare.female.250.iter.csv", as.is=T, header = TRUE)
 simple.fdat <- aggregate(x = fdat,
                          by = list(fdat$males, fdat$OSR, fdat$rd, fdat$h, fdat$s),
@@ -81,6 +82,20 @@ for(i in 1:nrow(simple.fdat)){
   simple.fdat[i,12] <- fits[3]
   
 }
+
+
+simple.fdat$delA <- simple.fdat$fixA <-simple.fdat$delY <-simple.fdat$fixY <- simple.fdat$delX <-simple.fdat$fixX <-  NA
+
+for(i in 1:nrow(simple.fdat)){
+  fixes <- getProb(simple.fdat, fdat)
+  simple.fdat[i,13] <- fixes[1]
+  simple.fdat[i,14] <- fixes[2]
+  simple.fdat[i,15] <- fixes[3]
+  simple.fdat[i,16] <- fixes[4]
+  simple.fdat[i,17] <- fixes[5]
+  simple.fdat[i,18] <- fixes[6]
+}
+
 
 
 simple.fsex<-simple.fdat[simple.fdat$rd == 0.2,] #Sex-linked
@@ -147,9 +162,6 @@ AutFit[7] <- ffit.aut[12]
 colnames(AutFit)[7] <- "F_Wdiff"
 
 
-
-
-
 #Graphs
 
 
@@ -174,11 +186,6 @@ SexFitnessComp <- ggdraw() + draw_plot(SexFitnessComp) +
 SexFitnessComp
 
 
-# test4 <-SexFit_h[SexFit_h$rd == 0.2,]
-# test4 <-test4[test4$common == 1000,]
-# test4 <-test4[test4$OSR == 1.0,,]
-# test4 <-test4[test4$h == 0.5,]
-
 AutFit_h <- AutFit[AutFit$h == 0.5,]
 
 AutFitnessComp <- ggplot(AutFit_h, aes(x = OSR))+
@@ -197,10 +204,95 @@ AutFitnessComp <- ggdraw() + draw_plot(AutFitnessComp) +
 AutFitnessComp
 
 
-# test3 <-AutFit_h[AutFit_h$rd == 0.5,]
-# test3 <-test3[test3$common == 1000,]
-# test3 <-test3[test3$OSR == 1.0,,]
-# test3 <-test3[test3$h == 0.5,]
+### Fixation 
+
+# X
+# set up for allele 2 which is beneficial for females
+# delA is allele 1 (male)
+# fixA is allele 2 (female)
+
+AutFix <- mfit.aut[,c(4:8,13:18)]
+colnames(AutFix)[1] <- "common"
+colnames(AutFix)[c(6:11)] <- c("M_FfixX","M_FdelX", "M_FfixY","M_FdelY","M_FfixA","M_FdelA")
+AutFix[c(12:17)] <- ffit.aut[c(13:18)]
+colnames(AutFix)[c(12:17)] <- c("F_MfixX","F_MdelX", "F_MfixY","F_MdelY","F_MfixA","F_MdelA")
+
+AutFix_h <- AutFix[AutFix$h == 0.5,]
+
+AutFixCompA <- ggplot(AutFix, aes(x = OSR))+
+  facet_grid(h~common)+
+  geom_line(aes(y=(M_FdelA), colour =s,))+ #common female (allele 2)
+  geom_point(aes(y=(M_FdelA), shape = "Common Female", colour = s))+
+  geom_point(aes(y=(F_MfixA), shape = "Common Male", colour = s))+ #common male, allele 1 
+  geom_line(aes(y=(F_MfixA), colour = s))+
+  scale_y_continuous(limits = c(-.1,1.0), breaks = my_ticks, labels=my_labels,expand = c(0,0))+
+  theme(axis.line.y = element_blank(), plot.margin = unit(c(1,1,1,1), "lines"))+
+  ylab(expression("Frequeny of beneficial A \n"))+
+  ggtitle("Prob of beneficial A Fixed, rd = 0.5, h = 0.5") 
+AutFixCompA
+
+
+SexFix <- mfit.sex[,c(4:8,13:18)]
+colnames(SexFix)[1] <- "common"
+colnames(SexFix)[c(6:11)] <- c("M_FfixX","M_FdelX", "M_FfixY","M_FdelY","M_FfixA","M_FdelA")
+SexFix[c(12:17)] <- ffit.aut[c(13:18)]
+colnames(SexFix)[c(12:17)] <- c("F_MfixX","F_MdelX", "F_MfixY","F_MdelY","F_MfixA","F_MdelA")
+
+#X chromosome
+SexFixCompX <- ggplot(SexFix, aes(x = OSR))+
+  facet_grid(h~common)+
+  geom_line(aes(y=(M_FfixX), colour =s,))+ #common female (allele 2) X - allele 2 is ben (fixed)
+  geom_point(aes(y=(M_FfixX), shape = "Common Female", colour = s))+
+  geom_point(aes(y=(F_MdelX), shape = "Common Male", colour = s))+ #common male, allele 1 - delX
+  geom_line(aes(y=(F_MdelX), colour = s))+
+  scale_y_continuous(limits = c(-.1,1.0), breaks = my_ticks, labels=my_labels,expand = c(0,0))+
+  theme(axis.line.y = element_blank(), plot.margin = unit(c(1,1,1,1), "lines"))+
+  ylab(expression("Frequeny of beneficial X \n"))+
+  ggtitle("Prob of beneficial X Fixed, rd = 0.5, h = 0.5") 
+SexFixCompX
+
+#The two sex chromosome probabilities of fixation are the same in both male and female coomon/rare
+#Why?
+#Male has one X and Y
+#Probability of fixing Y is solely dependent on the male so it seems reasonable that the probability of
+#Fixing the beneficial Y depends on drift and whether or not ben Y is recessive or dominant
+#Check the original graphs
+
+#Y chromosome
+SexFixCompY <- ggplot(SexFix, aes(x = OSR))+
+  facet_grid(h~common)+
+  geom_line(aes(y=(M_FdelY), colour =s,))+ #common female (allele 2) - allele 2 is ben (delY)
+  geom_point(aes(y=(M_FdelY), shape = "Common Female", colour = s))+
+  geom_point(aes(y=(F_MfixY), shape = "Common Male", colour = s))+ #common male, allele 1 - fixY
+  geom_line(aes(y=(F_MfixY), colour = s))+
+  scale_y_continuous(limits = c(-.1,1.0), breaks = my_ticks, labels=my_labels,expand = c(0,0))+
+  theme(axis.line.y = element_blank(), plot.margin = unit(c(1,1,1,1), "lines"))+
+  ylab(expression("Frequeny of beneficial Y \n"))+
+  ggtitle("Prob of beneficial Y Fixed, rd = 0.5, h = 0.5") 
+SexFixCompY
 
 
 
+SexFixComp <- ggplot(SexFix, aes(x = OSR))+
+  facet_grid(h~common)+
+  geom_line(aes(y=(M_FfixX), colour =s,))+ #common female (allele 2) X - fixX 
+  geom_point(aes(y=(M_FfixX), shape = "Common Female", colour = s))+
+  geom_point(aes(y=(F_MfixY), shape = "Common Male", colour = s))+ #common male, allele 1 - fixY
+  geom_line(aes(y=(F_MfixY), colour = s))+
+  scale_y_continuous(limits = c(-.1,1.0), breaks = my_ticks, labels=my_labels,expand = c(0,0))+
+  theme(axis.line.y = element_blank(), plot.margin = unit(c(1,1,1,1), "lines"))+
+  ylab(expression("Frequeny of beneficial Chromosome \n"))+
+  ggtitle("Prob of beneficial Chr Fixed, rd = 0.5, h = 0.5") 
+SexFixComp
+
+SexFixCompDel <- ggplot(SexFix, aes(x = OSR))+
+  facet_grid(h~common)+
+  geom_line(aes(y=(M_FdelX), colour =s,))+ #common female (allele 2) X - fixX 
+  geom_point(aes(y=(M_FdelX), shape = "Common Female", colour = s))+
+  geom_point(aes(y=(F_MdelY), shape = "Common Male", colour = s))+ #common male, allele 1 - fixY
+  geom_line(aes(y=(F_MdelY), colour = s))+
+  scale_y_continuous(limits = c(-.1,1.0), breaks = my_ticks, labels=my_labels,expand = c(0,0))+
+  theme(axis.line.y = element_blank(), plot.margin = unit(c(1,1,1,1), "lines"))+
+  ylab(expression("Frequeny of deleterious Chromosome \n"))+
+  ggtitle("Prob of beneficial Chr deleted, rd = 0.5, h = 0.5") 
+SexFixCompDel

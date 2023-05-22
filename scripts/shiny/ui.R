@@ -21,7 +21,9 @@ fluidPage(
                   selectInput("chromosome", label = h3("Chromosome selection"), 
                               choices = list("Auto" = "0.5", "Sex" = "0.2"), 
                               selected = "0.5"),
-                  
+                  selectInput("sex", label = h3("Common Sex"),
+                              choices = list("Male" = "1", "Female" = "2"),
+                              selected = "Male"),
                   selectInput("pop", label = h3("Common Population size"), 
                               choices = list("50" = "50", "100" = "100", "500" = "500", "1000" = "1000"), 
                               selected = "1000"),

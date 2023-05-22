@@ -3,7 +3,7 @@
 # Updated 3-14-2023
 
 
-setwd("~/GitHub/sex.bias/results")
+setwd("C:/Users/pdglenn/OneDrive/Github/sex.bias/results")
 #Load libraries
 library(gridExtra)
 library(grid)
@@ -77,10 +77,11 @@ rare.male.aut.mean <- ggplot(simple.maut, aes(y=(1-A), x=OSR))+
   xlab("Operational Sex Ratio")+ylab("Female - A ben Frequency")+labs("dominance")+ggtitle("'A' Mean: Rare Male, RD = 0.5")
 rare.male.aut.mean
 
+simple.maut_h <- simple.maut[simple.maut$h == 0.5,]
 
 # Fixed at 1 was for allele 1, beneficial for male. Need allele beneficial for female. If allele 1 was deleted, then allele 2 fixed. 
 # So looking at prob allele 1 was del, allele 2 fixed"
-rare.male.aut.fix <- ggplot(simple.maut, aes(y=(delA), x=OSR))+ 
+rare.male.aut.fix <- ggplot(simple.maut_h, aes(y=(delA), x=OSR))+ 
   geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
   geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+
@@ -438,8 +439,10 @@ rare.female.aut.mean <- ggplot(simple.faut, aes(y=A, x=OSR))+
   xlab("Operational Sex Ratio")+ylab("Male ben A freq")+labs("Number of Common Sex (Male)")+ggtitle("'A' Mean: Rare Female, RD = 0.5")
 rare.female.aut.mean
 
+simple.faut_h <- simple.faut[simple.faut$h == 0.5,]
+
 #autosome used allele 1, male ben, so no change necessary
-rare.female.aut.fix <- ggplot(simple.faut, aes(y=fixA, x=OSR))+ 
+rare.female.aut.fix <- ggplot(simple.faut_h, aes(y=fixA, x=OSR))+ 
   geom_line(aes(colour=s), linewidth=1)+ylim(c(0,1)) + 
   geom_point(aes(shape=s, fill=s),stat="identity", position="identity", size=3)+ 
   scale_colour_viridis_d(end=0.9)+scale_shape_manual(values=c(21,24,22,23))+scale_fill_viridis_d(end=0.9)+

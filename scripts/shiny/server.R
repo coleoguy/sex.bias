@@ -8,16 +8,17 @@ library(doParallel)
 #TODO
 
 # setwd("C:/Users/pdglenn/OneDrive/TAMU/OSR/ShinyOSRx/server_ui")
-# common = 1000
-# s = 0.1
-# osr = 1.0
-# h = 0.5
-# males = 1000
-# iter = 3
-# gens = 1000
-# x = "Sex"
-# chromosome = 0.2
-# #input$chromosome
+common = 1000
+s = 0.1
+osr = 1.0
+h = 0.5
+males = 1000
+iter = 3
+gens = 1000
+x = "Sex"
+chromosome = 0.2
+sex = 1
+#input$chromosome
 
 no_cores <- detectCores(logical = TRUE)
 # number at the end here determines the number of cores left free
@@ -31,12 +32,7 @@ source("functions.R")
 
 gens = 1000
 # Simulated frequencies
-get.simulated.results <- function(common,s, osr,h, males, iter, chromosome) {
-
-    females <- ceiling(common * osr)
-    if (females < 4) {
-      females <- 4
-      }
+get.simulated.results <- function(common,s, osr,h, iter, chromosome, sex) {
   
     # this sets up the container for a given sim
     resultY <- resultX <- resultA <- c()
@@ -46,10 +42,24 @@ get.simulated.results <- function(common,s, osr,h, males, iter, chromosome) {
     
     if (iter > 0) {
       for (k in 1:iter) {
+        if(sex == 1){
+          males <- common
+          females <- ceiling(common * osr)
+          if (females < 4) {
+            females <- 4
+          }
+        } else if(sex == 2){
+          females <- common
+          males <- ceiling(common * osr)
+          if (males < 4) {
+            males <- 4
+          }
+        }
         if (chromosome == 0.2) { # sex
-        pop <- makeGenomes(females, males,
+
+        pop <- makeGenomes(females = females, males = males,
                            freqs = c(rep(females / 4, 4),
-                                     rep(common / 4, 4)))
+                                     rep(males / 4, 4)))
         segregating <- TRUE
         c.ite <- 0
         while (segregating) {
@@ -57,9 +67,9 @@ get.simulated.results <- function(common,s, osr,h, males, iter, chromosome) {
           c.ite <- c.ite + 1
           
           Y <- resultY[c.ite] <- GetFreq(pop, chrom = "Y", allele = 1,
-                                         females = females, males = common)
+                                         females = females, males = males)
           X <- resultX[c.ite] <- GetFreq(pop, chrom = "X", allele = 2,
-                                         females = females, males = common)
+                                         females = females, males = males)
           
           # Males
           p2 <- (1 - X) * Y
@@ -72,9 +82,15 @@ get.simulated.results <- function(common,s, osr,h, males, iter, chromosome) {
           wFem[c.ite] <- ((p^2 * (1 + s)) + (2 * p * q * (1 + ((1 - h) * s))) + (q^2 * 1))
           
           # Difference
-          wDiff[c.ite] <- wMal[c.ite] - wFem[c.ite]
+          #TODO update the Wdiff
+          if(sex == 1){ #common male
+            wDiff[c.ite] <- wMal[c.ite] - wFem[c.ite]
+          } else{ #common female
+            wDiff[c.ite] <- wFem[c.ite] - wMal[c.ite]
+          }
           
-          pop <- Generation(pop, females = females, males = common,
+          
+          pop <- Generation(pop, females = females, males = males,
                             rd = 0.2, h = h, s = s)
           
           # Check if we have run gens generations
@@ -90,23 +106,28 @@ get.simulated.results <- function(common,s, osr,h, males, iter, chromosome) {
         names(total) <- c("wDiff","Xfreq","Yresults")
         
       } else { # auto
-        pop <- makeGenomes(females, males,
+        pop <- makeGenomes(females = females, males = males,
                            freqs = c(rep(females / 4, 4),
-                                     rep(common / 4, 4)))
+                                     rep(males / 4, 4)))
         segregating <- TRUE
         c.ite <- 0
         while (segregating) {
           c.ite <- c.ite + 1
           
           A <- resultA[c.ite] <- GetFreq(pop, chrom = "A", allele = 1,
-                                         females = females, males = pop)
+                                         females = females, males = males)
           
           p <- A # p is allele 1, 1 is beneficial for males
           q <- 1 - p # q is allele 2, 2 is beneficial for females
           
-          wMal[c.ite] <- ((p^2 * (1 + s)) + (2 * p * q * (1 + h * s)) + (q^2 * 1)) # /(1+x[8])
+          wMal[c.ite] <- ((p^2 * (1 + s)) + (2 * p * q * (1 + h * s)) + (q^2 * 1))
           wFem[c.ite] <- (p^2 * 1) + (2 * p * q * (1 + ((1 - h) * s))) + (q^2 * (1 + s))
-          wDiff[c.ite] <- wMal[c.ite] - wFem[c.ite]
+          
+          if(sex == 1){ #common male
+            wDiff[c.ite] <- wMal[c.ite] - wFem[c.ite]
+          } else{ #common female
+            wDiff[c.ite] <- wFem[c.ite] - wMal[c.ite]
+          }
           
           pop <- Generation(pop, females = females, males = males,
                             rd = 0.5, h = h, s = s)
@@ -124,7 +145,7 @@ get.simulated.results <- function(common,s, osr,h, males, iter, chromosome) {
       }
         
     }
-  }
+    }
   return(total)
 }
 
@@ -133,10 +154,34 @@ shinyServer(function(input, output) {
   
   # Drift simulations
   data <- reactive({
-    set.seed(input$seed.val)
-    get.simulated.results(common = as.numeric(input$pop),s = as.numeric(input$s),osr = as.numeric(input$osr),h = as.numeric(input$h),
-                                 males = as.numeric(input$pop),iter = as.numeric(input$iter),chromosome = input$chromosome)
+    input$seed.val
+    input$pop
+    input$s
+    input$osr
+    input$h
+    input$iter
+    input$chromosome
+    input$sex
+    
+    get.simulated.results(
+      common = as.numeric(input$pop),
+      s = as.numeric(input$s),
+      osr = as.numeric(input$osr),
+      h = as.numeric(input$h),
+      iter = as.numeric(input$iter),
+      chromosome = input$chromosome,
+      sex = as.numeric(input$sex)
+    )
   })
+  
+  # Expected calculations Heath example
+  # expected.A <- reactive({
+  #   get.expected.results(input$initial.A, input$gen, input$fit.AA, input$fit.Aa,
+  #                        input$fit.aa, input$qAa, input$qaA)
+  # })
+  
+  
+  #TODO Find the mean?
   
   
   # Expected calculations
@@ -147,7 +192,7 @@ shinyServer(function(input, output) {
     
     if(input$var.plot == 1){ #Wdiff
       # Set up plot area
-      plot(0, 0, col = 'white', xlim = c(0, gens), ylim = c(-0.5,0.5),
+      plot(0, 0, col = 'white', xlim = c(0, gens), ylim = c(-1,1),
            xlab = 'Time (generations)', ylab = "Wdiff (common-rare)",
            cex.lab=1.5, cex.axis=1.3, main="Fitness difference")
       mtext("Produced with the package evobiR", 
@@ -209,6 +254,11 @@ shinyServer(function(input, output) {
             }
           }
         }
+      #TODO add lines for expected data
+      
+      # Plot expected outcome from Heath's example
+      # if (input$var.plot == 1) 
+      #   lines(1:input$gen, expected.A()^2, lwd = lwd.expected)
       }
     
     # Plot expected outcome
